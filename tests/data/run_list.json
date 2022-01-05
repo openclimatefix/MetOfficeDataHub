@@ -1,0 +1,74 @@
+{
+    "runs": [
+        {
+            "modelId": "mo-uk",
+            "completeRuns": [
+                {
+                    "run": "00",
+                    "runDateTime": "2022-01-05T00:00:00Z",
+                    "runFilter": "2022010500"
+                },
+                {
+                    "run": "01",
+                    "runDateTime": "2022-01-05T01:00:00Z",
+                    "runFilter": "2022010501"
+                },
+                {
+                    "run": "02",
+                    "runDateTime": "2022-01-05T02:00:00Z",
+                    "runFilter": "2022010502"
+                }
+            ]
+        },
+        {
+            "modelId": "mo-uk-latlon",
+            "completeRuns": [
+                {
+                    "run": "00",
+                    "runDateTime": "2022-01-05T00:00:00Z",
+                    "runFilter": "2022010500"
+                },
+                {
+                    "run": "01",
+                    "runDateTime": "2022-01-05T01:00:00Z",
+                    "runFilter": "2022010501"
+                },
+                {
+                    "run": "02",
+                    "runDateTime": "2022-01-05T02:00:00Z",
+                    "runFilter": "2022010502"
+                }
+            ]
+        },
+        {
+            "modelId": "mo-global",
+            "completeRuns": [
+                {
+                    "run": "00",
+                    "runDateTime": "2022-01-05T00:00:00Z",
+                    "runFilter": "2022010500"
+                },
+                {
+                    "run": "06",
+                    "runDateTime": "2022-01-05T06:00:00Z",
+                    "runFilter": "2022010506"
+                }
+            ]
+        },
+        {
+            "modelId": "mo-mogrepsg",
+            "completeRuns": [
+                {
+                    "run": "00",
+                    "runDateTime": "2022-01-05T00:00:00Z",
+                    "runFilter": "2022010500"
+                },
+                {
+                    "run": "06",
+                    "runDateTime": "2022-01-05T06:00:00Z",
+                    "runFilter": "2022010506"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,65 @@
+{
+    "fileDetails": {
+        "file": {
+            "fileId": "atmosphere_high-cloud-cover+low-cloud-cover+medium-cloud-cover_+06_0",
+            "surfaceId": "atmosphere",
+            "levels": [],
+            "runDateTime": "2022-01-05T06:00:00Z",
+            "run": "6",
+            "region": {
+                "name": "GB and Eire",
+                "extent": {
+                    "x": {
+                        "label": "longitude",
+                        "lowerBound": "-576719",
+                        "upperBound": "333408",
+                        "uomLabel": "degree"
+                    },
+                    "y": {
+                        "label": "latitude",
+                        "lowerBound": "-576719",
+                        "upperBound": "700220",
+                        "uomLabel": "degree"
+                    }
+                }
+            },
+            "parameters": [
+                "high-cloud-cover",
+                "low-cloud-cover",
+                "medium-cloud-cover"
+            ],
+            "timesteps": [
+                "0"
+            ]
+        },
+        "parameterDetails": [
+            {
+                "parameterId": "high-cloud-cover",
+                "extent": {
+                    "t": [
+                        "2022-01-05T06:00:00Z"
+                    ],
+                    "z": []
+                }
+            },
+            {
+                "parameterId": "low-cloud-cover",
+                "extent": {
+                    "t": [
+                        "2022-01-05T06:00:00Z"
+                    ],
+                    "z": []
+                }
+            },
+            {
+                "parameterId": "medium-cloud-cover",
+                "extent": {
+                    "t": [
+                        "2022-01-05T06:00:00Z"
+                    ],
+                    "z": []
+                }
+            }
+        ]
+    }
+}

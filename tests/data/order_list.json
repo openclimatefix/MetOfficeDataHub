@@ -1,0 +1,13 @@
+{
+    "orders": [
+        {
+            "orderId": "o1234556789",
+            "name": "O1234556789",
+            "modelId": "mo-uk",
+            "requiredLatestRuns": [
+                "06"
+            ],
+            "format": "GRIB2"
+        }
+    ]
+}
