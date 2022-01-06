@@ -1,7 +1,7 @@
 {
     "orderDetails": {
         "order": {
-            "orderId": "o1234556789",
+            "orderId": "test_order_id",
             "name": "O1234556789",
             "modelId": "mo-uk",
             "format": "GRIB2"

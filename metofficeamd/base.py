@@ -94,7 +94,6 @@ class BaseMetOfficeAMD:
         """
 
         response = self.call_url(url=f"https://{DOMAIN}/{ROOT}/orders/{order_id}/latest")
-
         data = response.json()["orderDetails"]
 
         return OrderDetails(**data)
@@ -115,7 +114,6 @@ class BaseMetOfficeAMD:
         response = self.call_url(url=f"https://{DOMAIN}/{ROOT}/orders/{order_id}/latest/{file_id}")
 
         data = response.json()["fileDetails"]
-        print(data)
 
         return FileDetails(**data)
 
