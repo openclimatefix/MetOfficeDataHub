@@ -1,7 +1,7 @@
 {
     "fileDetails": {
         "file": {
-            "fileId": "atmosphere_high-cloud-cover+low-cloud-cover+medium-cloud-cover_+06_0",
+            "fileId": "agl_temperature_00",
             "surfaceId": "atmosphere",
             "levels": [],
             "runDateTime": "2022-01-05T06:00:00Z",

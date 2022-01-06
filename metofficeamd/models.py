@@ -28,6 +28,8 @@ class File(BaseModel):
     fileId: str
     runDateTime: datetime
     run: int
+    local_filename: Optional[str]
+    timesteps: Optional[List[int]]
 
 
 class OrderList(BaseModel):
