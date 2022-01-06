@@ -108,17 +108,23 @@ class MetOfficeAMD(BaseMetOfficeAMD):
         return dataset
 
 
-def save_to_zarr(dataset:xr.Dataset, save_dir:str, save_latest:bool=True):
+def save_to_zarr(dataset: xr.Dataset, save_dir: str, save_latest: bool = True):
+    """
+    Save dataset to zarr file
 
-    filename = pd.to_datetime(dataset.time.values).tz_localize('UTC').isoformat()
-    filename_and_path = f'{save_dir}/{filename}.zarr'
-    filename_and_path_latest = f'{save_dir}/latest.zarr'
+    :param dataset: The Xarray Dataset to be save
+    :param save_dir: the directory where data is saved.
+        The zarr file will be saved using the timestamp of the run in isoformat
+    :param save_latest: option to save as 'latest.zarr'
+    """
+    filename = pd.to_datetime(dataset.time.values).tz_localize("UTC").isoformat()
+    filename_and_path = f"{save_dir}/{filename}.zarr"
+    filename_and_path_latest = f"{save_dir}/latest.zarr"
 
     encoding = {
         var: {"compressor": numcodecs.Blosc(cname="zstd", clevel=5)} for var in dataset.data_vars
     }
 
     if save_latest:
-        dataset.to_zarr(filename_and_path_latest ,mode="w", encoding=encoding)
-    dataset.to_zarr(filename_and_path, mode="w",encoding=encoding)
-
+        dataset.to_zarr(filename_and_path_latest, mode="w", encoding=encoding)
+    dataset.to_zarr(filename_and_path, mode="w", encoding=encoding)
