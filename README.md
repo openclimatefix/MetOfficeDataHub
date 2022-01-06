@@ -11,7 +11,8 @@ MetOfficeAMD is a simple wrapper for the API provided by the British Met Office 
 Your need to register and obtain a API key and secret. This should be placed in environment variables as `API_KEY` and `API_SECRET`
 
 ## Installation
-TODO
+
+```pip install metofficeamd```
 
 
 # Data variables
