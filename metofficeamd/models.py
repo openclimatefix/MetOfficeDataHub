@@ -9,7 +9,7 @@ class Extent(BaseModel):
 
 
 class OrderInfo(BaseModel):
-    orderId: str 
+    orderId: str
     name: str
     modelId: str
     requiredLatestRuns: Optional[List[int]]
