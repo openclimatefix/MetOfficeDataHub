@@ -10,7 +10,7 @@ install_requires = (this_directory / "requirements.txt").read_text().splitlines(
 
 setup(
     name="metofficeamd",
-    version="0.0.3",
+    version="0.0.4",
     license="MIT",
     description="Python wrapper for Met Office Weather DataHub AMD API",
     author="Peter Dudfield",
