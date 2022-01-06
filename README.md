@@ -12,3 +12,18 @@ Your need to register and obtain a API key and secret. This should be placed in 
 
 ## Installation
 TODO
+
+
+# Data variables
+
+When the data is loaded they are given a short name
+- lcc   : Low-level cloud cover in %. 
+- mcc   : Medium-level cloud cover in %.
+- hcc   : High-level cloud cover in %.
+- sde   : Snow depth in meters.
+- dswrf : Downward longwave radiation flux - ground
+- t     : Air temperature at 1 meter above surface in Kelvin.
+- r     : Relative humidty in %.
+- vis   : Visibility in meters.
+- si10  : Wind speed in meters per second, 10 meters above surface.
+- prate : Precipitation rate at the surface in kg/m^2/s.

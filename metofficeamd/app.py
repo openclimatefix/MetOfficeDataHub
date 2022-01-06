@@ -1,6 +1,7 @@
 from metofficeamd.base import BaseMetOfficeAMD
 import cfgrib
 import xarray as xr
+from typing import Optional, List
 import logging
 
 logger = logging.getLogger(__name__)
@@ -19,38 +20,44 @@ VARS_TO_DELETE = (
 
 
 class MetOfficeAMD(BaseMetOfficeAMD):
-    """ Class built on top of BaseMetOfficeAMD used for processing multiple files """
+    """Class built on top of BaseMetOfficeAMD used for processing multiple files"""
 
-    def download_all_files(self):
-        """ Download all files in the latest"""
+    def download_all_files(self, order_ids: Optional[List[str]] = None):
+        """Download all files in the latest"""
 
-        all_orders = self.get_orders()
+        if order_ids is None:
+            all_orders = self.get_orders()
+            order_ids = [order.orderId for order in all_orders.orders]
 
         # loop over orders
         self.files = []
-        for order in all_orders.orders:
+        for order_id in order_ids:
 
-            logger.debug(f'Loading files from order {order.orderId}')
+            logger.debug(f"Loading files from order {order_id}")
 
-            order_id = order.orderId
             self.order_details = self.get_lastest_order(order_id=order_id)
 
             # loop over all files
             for file in self.order_details.files:
                 file_id = file.fileId
-                # get full file information
-                # file = self.get_latest_order_file_id(order_id=order_id, file_id=file_id).file
 
-                # download file
-                filename = self.get_lastest_order_file_id_data(order_id=order_id, file_id=file_id)
+                variable = file.fileId
+                datetime = variable.split("_")[-2]
 
-                # put local file in file object
-                file.local_filename = filename
+                # There seems to be two files that are the same, one with '+HH' and one with 'YYYYMMDDHH'
+                if datetime[0] != "+":
 
-                self.files.append(file)
+                    # download file
+                    filename = self.get_lastest_order_file_id_data(
+                        order_id=order_id, file_id=file_id
+                    )
+
+                    # put local file in file object
+                    file.local_filename = filename
+                    self.files.append(file)
 
     def load_file(self, file) -> xr.Dataset:
-        """ Load one grib file"""
+        """Load one grib file"""
 
         datasets_from_grib: list[xr.Dataset] = cfgrib.open_datasets(file)
 
@@ -59,17 +66,17 @@ class MetOfficeAMD(BaseMetOfficeAMD):
         return merged_ds
 
     def load_all_files(self) -> xr.Dataset:
-        """ Load all files and join them together"""
+        """Load all files and join them together"""
 
         # loop over all files and load them
         all_datasets_per_filename = {}
         for file in self.files:
             variable = file.fileId
-            datetime = variable.split('_')[-2]
-            variable = variable.split('_')[1]
+            datetime = variable.split("_")[-2]
+            variable = variable.split("_")[1]
 
             # There seems to be two files that are the same, one with '+HH' and one with 'YYYYMMDDHH'
-            if datetime[0] != '+':
+            if datetime[0] != "+":
 
                 dataset = self.load_file(file=file.local_filename)
                 if variable not in all_datasets_per_filename.keys():
@@ -82,7 +89,7 @@ class MetOfficeAMD(BaseMetOfficeAMD):
         for k, v in all_datasets_per_filename.items():
 
             # join all variables toegther
-            dataset = xr.concat(v, dim='step')
+            dataset = xr.concat(v, dim="step")
 
             # remove un-needed variables
             for var in VARS_TO_DELETE:
@@ -94,13 +101,3 @@ class MetOfficeAMD(BaseMetOfficeAMD):
         dataset = xr.merge(all_dataset)
 
         return dataset
-
-
-
-
-
-
-
-
-
-

@@ -64,7 +64,7 @@ class BaseMetOfficeAMD:
             headers = self.headers
 
         url = f"{url}?detail=MINIMAL"
-        logger.debug(f'Calling url {url}')
+        logger.debug(f"Calling url {url}")
 
         response = requests.get(url, headers=headers)
 

@@ -11,11 +11,6 @@
                 "fileId": "atmosphere_high-cloud-cover+low-cloud-cover+medium-cloud-cover_+06_0",
                 "runDateTime": "2022-01-05T06:00:00Z",
                 "run": "6"
-            },
-            {
-                "fileId": "atmosphere_high-cloud-cover+low-cloud-cover+medium-cloud-cover_2022010506_0",
-                "runDateTime": "2022-01-05T06:00:00Z",
-                "run": "6"
             }
         ]
     }
