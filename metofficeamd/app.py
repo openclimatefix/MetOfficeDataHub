@@ -50,7 +50,8 @@ class MetOfficeAMD(BaseMetOfficeAMD):
                 variable = file.fileId
                 datetime = variable.split("_")[-2]
 
-                # There seems to be two files that are the same, one with '+HH' and one with 'YYYYMMDDHH'
+                # There seems to be two files that are the same,
+                # one with '+HH' and one with 'YYYYMMDDHH'
                 if datetime[0] != "+":
 
                     # download file
