@@ -3,10 +3,12 @@
 This gives an easy way to download all files from an order
 """
 import logging
+import numcodecs
 from typing import List, Optional
 
 import cfgrib
 import xarray as xr
+import pandas as pd
 
 from metofficeamd.base import BaseMetOfficeAMD
 
@@ -104,3 +106,19 @@ class MetOfficeAMD(BaseMetOfficeAMD):
         dataset = xr.merge(all_dataset)
 
         return dataset
+
+
+def save_to_zarr(dataset:xr.Dataset, save_dir:str, save_latest:bool=True):
+
+    filename = pd.to_datetime(dataset.time.values).tz_localize('UTC').isoformat()
+    filename_and_path = f'{save_dir}/{filename}.zarr'
+    filename_and_path_latest = f'{save_dir}/latest.zarr'
+
+    encoding = {
+        var: {"compressor": numcodecs.Blosc(cname="zstd", clevel=5)} for var in dataset.data_vars
+    }
+
+    if save_latest:
+        dataset.to_zarr(filename_and_path_latest ,mode="w", encoding=encoding)
+    dataset.to_zarr(filename_and_path, mode="w",encoding=encoding)
+

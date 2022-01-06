@@ -5,3 +5,5 @@ ecmwflibs
 eccodes
 cfgrib
 xarray
+numcodecs
+zarr
