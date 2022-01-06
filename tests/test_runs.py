@@ -1,7 +1,8 @@
-from metofficeamd.app import MetOfficeAMD
-from unittest import mock
-from tests.conftest import mock_get_run_list, mock_get_run_list_for_model
 import tempfile
+from unittest import mock
+
+from metofficeamd.app import MetOfficeAMD
+from tests.conftest import mock_get_run_list, mock_get_run_list_for_model
 
 
 @mock.patch("requests.get")

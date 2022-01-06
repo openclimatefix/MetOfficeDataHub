@@ -1,12 +1,13 @@
-from metofficeamd.app import MetOfficeAMD
+import tempfile
 from unittest import mock
+
+from metofficeamd.app import MetOfficeAMD
 from tests.conftest import (
+    mock_get_example_grib,
+    mock_get_file_details,
     mock_get_order_list,
     mock_get_orders_details,
-    mock_get_file_details,
-    mock_get_example_grib,
 )
-import tempfile
 
 
 def test_init():
