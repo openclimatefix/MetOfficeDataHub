@@ -28,9 +28,6 @@ class MetOfficeAMD:
 
         self.cache_dir = cache_dir
 
-        if not os.path.isdir(self.cache_dir):
-            os.mkdir(self.cache_dir)
-
     def make_connection(self):
         self.conn = http.client.HTTPSConnection(DOMAIN)
 
@@ -125,6 +122,8 @@ class MetOfficeAMD:
         )
 
         filename = f"{self.cache_dir}/{order_id}_{file_id}.grib"
+        if not os.path.isdir(self.cache_dir):
+            os.mkdir(self.cache_dir)
 
         with open(filename, mode="wb") as localfile:
             localfile.write(data.content)
