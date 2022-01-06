@@ -5,6 +5,7 @@ import click
 
 logger = logging.getLogger(__name__)
 
+
 @click.command()
 @click.option(
     "--api-key",
@@ -28,7 +29,7 @@ logger = logging.getLogger(__name__)
     type=click.STRING,
 )
 def run(api_key, api_secret, save_dir):
-    """ Run main application
+    """Run main application
 
     1. Get data from API, download grip files
     2. load grib files to one Xarray Dataset
