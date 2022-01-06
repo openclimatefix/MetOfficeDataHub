@@ -11,8 +11,17 @@ class MetOfficeAMD:
 
     def __init__(self, cache_dir: str = "./temp"):
 
-        self.client_id = os.environ["API_KEY"]
-        self.client_secret = os.environ["API_SECRET"]
+        if "API_KEY" in os.environ:
+            self.client_id = os.environ["API_KEY"]
+        else:
+            # add warning
+            self.client_id = 'dummy_client_id'
+
+        if "API_SECRET" in os.environ:
+            self.client_secret = os.environ["API_SECRET"]
+        else:
+            # add warning
+            self.client_secret = 'dummy_client_secret'
 
         self.make_connection()
         self.make_headers()
