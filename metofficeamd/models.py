@@ -6,13 +6,15 @@ from pydantic import BaseModel
 
 
 class Extent(BaseModel):
-    """ Extent model """
+    """Extent model"""
+
     t: List[datetime]
     z: List[int]
 
 
 class OrderInfo(BaseModel):
-    """ Order info model"""
+    """Order info model"""
+
     orderId: str
     name: str
     modelId: str
@@ -21,48 +23,56 @@ class OrderInfo(BaseModel):
 
 
 class File(BaseModel):
-    """ File model"""
+    """File model"""
+
     fileId: str
     runDateTime: datetime
     run: int
 
 
 class OrderList(BaseModel):
-    """ Order list model """
+    """Order list model"""
+
     orders: List[OrderInfo] = []
 
 
 class OrderDetails(BaseModel):
-    """ Order details model """
+    """Order details model"""
+
     order: OrderInfo
     files: List[File]
 
 
 class RunDetails(BaseModel):
-    """ Run details model"""
+    """Run details model"""
+
     run: int
     runDateTime: datetime
     runFilter: str
 
 
 class RunListForModel(BaseModel):
-    """ Run list for a specific model """
+    """Run list for a specific model"""
+
     modelId: str
     completeRuns: List[RunDetails]
 
 
 class RunList(BaseModel):
-    """ Run list model """
+    """Run list model"""
+
     runs: List[RunListForModel]
 
 
 class ParameterDetails(BaseModel):
-    """ Parameter details model """
+    """Parameter details model"""
+
     parameterId: str
     extent: Extent
 
 
 class FileDetails(BaseModel):
-    """ File details model """
+    """File details model"""
+
     parameterDetails: List[ParameterDetails]
     file: File
