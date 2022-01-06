@@ -17,7 +17,7 @@ TODO
 # Data variables
 
 When the data is loaded they are given a short name
-- lcc   : Low-level cloud cover in %. 
+- lcc   : Low-level cloud cover in %.
 - mcc   : Medium-level cloud cover in %.
 - hcc   : High-level cloud cover in %.
 - sde   : Snow depth in meters.

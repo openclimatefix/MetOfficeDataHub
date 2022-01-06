@@ -1,8 +1,10 @@
-from metofficeamd.base import BaseMetOfficeAMD
+import logging
+from typing import List, Optional
+
 import cfgrib
 import xarray as xr
-from typing import Optional, List
-import logging
+
+from metofficeamd.base import BaseMetOfficeAMD
 
 logger = logging.getLogger(__name__)
 

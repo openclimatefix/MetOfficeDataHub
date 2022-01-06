@@ -1,11 +1,11 @@
 """ Main application for the API wrapper """
-import os
 import logging
+import os
+
 import requests
 
 from metofficeamd.constants import DOMAIN, ROOT
 from metofficeamd.models import FileDetails, OrderDetails, OrderList, RunList, RunListForModel
-
 
 logger = logging.getLogger(__name__)
 
