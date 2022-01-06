@@ -19,14 +19,14 @@ def mocked_requests_get(*args, **kwargs):
         filename = "order_details.json"
     elif (
         args[0]
-        == f"https://{DOMAIN}/{ROOT}/orders/test_order_id/latest/atmosphere_high-cloud-cover+low-cloud-cover+medium-cloud-cover_+06_0?detail=MINIMAL"
+        == f"https://{DOMAIN}/{ROOT}/orders/test_order_id/latest/agl_temperature_00?detail=MINIMAL"
     ):
         filename = "file_details.json"
     elif (
         args[0]
-        == f"https://{DOMAIN}/{ROOT}/orders/test_order_id/latest/atmosphere_high-cloud-cover+low-cloud-cover+medium-cloud-cover_+06_0/data?detail=MINIMAL"
+        == f"https://{DOMAIN}/{ROOT}/orders/test_order_id/latest/agl_temperature_00/data?detail=MINIMAL"
     ):
-        filename = "example.grib"
+        filename = "test_order_id_agl_temperature_00.grib"
     elif args[0] == f"https://{DOMAIN}/{ROOT}/runs?detail=MINIMAL":
         filename = "run_list.json"
     elif args[0] == f"https://{DOMAIN}/{ROOT}/runs/mo-uk?detail=MINIMAL":
@@ -39,7 +39,7 @@ def mocked_requests_get(*args, **kwargs):
         with open(f"{folder}/{filename}") as json_file:
             data = json.load(json_file)
     else:
-        with open(f"{folder}/example.grib", "rb") as file:
+        with open(f"{folder}/{filename}", "rb") as file:
             data = file.read()
 
     return MockResponse(data, 200)
