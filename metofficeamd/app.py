@@ -1,7 +1,9 @@
 """ Application that pulls data from the Metoffice API and saves to a zarr file"""
 import logging
-from metofficeamd.multiple_files import MetOfficeAMD, save_to_zarr
+
 import click
+
+from metofficeamd.multiple_files import MetOfficeAMD, save_to_zarr
 
 logger = logging.getLogger(__name__)
 

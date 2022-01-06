@@ -3,12 +3,12 @@
 This gives an easy way to download all files from an order
 """
 import logging
-import numcodecs
 from typing import List, Optional
 
 import cfgrib
-import xarray as xr
+import numcodecs
 import pandas as pd
+import xarray as xr
 
 from metofficeamd.base import BaseMetOfficeAMD
 
