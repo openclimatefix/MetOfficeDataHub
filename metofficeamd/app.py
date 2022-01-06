@@ -74,17 +74,13 @@ class MetOfficeAMD(BaseMetOfficeAMD):
         all_datasets_per_filename = {}
         for file in self.files:
             variable = file.fileId
-            datetime = variable.split("_")[-2]
             variable = variable.split("_")[1]
 
-            # There seems to be two files that are the same, one with '+HH' and one with 'YYYYMMDDHH'
-            if datetime[0] != "+":
-
-                dataset = self.load_file(file=file.local_filename)
-                if variable not in all_datasets_per_filename.keys():
-                    all_datasets_per_filename[variable] = [dataset]
-                else:
-                    all_datasets_per_filename[variable].append(dataset)
+            dataset = self.load_file(file=file.local_filename)
+            if variable not in all_datasets_per_filename.keys():
+                all_datasets_per_filename[variable] = [dataset]
+            else:
+                all_datasets_per_filename[variable].append(dataset)
 
         # loop over different variables and join them together
         all_dataset = []
