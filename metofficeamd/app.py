@@ -1,3 +1,7 @@
+""" Main Application on top of wrapper
+
+This gives an easy way to download all files from an order
+"""
 import logging
 from typing import List, Optional
 
