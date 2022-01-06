@@ -1,5 +1,6 @@
 """ Main application for the API wrapper """
 import os
+
 import requests
 
 from metofficeamd.constants import DOMAIN, ROOT
