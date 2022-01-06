@@ -5,14 +5,14 @@ import tempfile
 
 
 def test_init():
-    _ = MetOfficeAMD()
+    _ = MetOfficeAMD(client_id='fake', client_secret='fake')
 
 
 @mock.patch('requests.get')
 def test_get_orders(mock_get):
     mock_get.return_value = mock_get_order_list()
     
-    amd = MetOfficeAMD()
+    amd = MetOfficeAMD(client_id='fake', client_secret='fake')
     amd.get_orders()
 
 @mock.patch('requests.get')
@@ -21,7 +21,7 @@ def test_latest_order(mock_get):
     
     order_id = "test_order_id"
 
-    amd = MetOfficeAMD()
+    amd = MetOfficeAMD(client_id='fake', client_secret='fake')
     amd.get_lastest_order(order_id=order_id)
 
 @mock.patch('requests.get')
@@ -31,16 +31,16 @@ def test_latest_order_file_id(mock_get):
     order_id = "test_order_id"
     file_id = "atmosphere_high-cloud-cover+low-cloud-cover+medium-cloud-cover_+06_0"
 
-    amd = MetOfficeAMD()
+    amd = MetOfficeAMD(client_id='fake', client_secret='fake')
     amd.get_lastest_order_file_id(order_id=order_id, file_id=file_id)
 
 @mock.patch('requests.get')
 def test_latest_order_file_id_data(mock_get):
     mock_get.return_value = mock_get_example_grib()
-    order_id = "o161058087167"
+    order_id = "test_order_id"
     file_id = "atmosphere_high-cloud-cover+low-cloud-cover+medium-cloud-cover_+06_0"
 
     with tempfile.TemporaryDirectory() as tmpdirname:
-        amd = MetOfficeAMD(cache_dir=tmpdirname)
+        amd = MetOfficeAMD(cache_dir=tmpdirname,client_id='fake', client_secret='fake')
         amd.get_lastest_order_file_id_data(order_id=order_id, file_id=file_id)
 

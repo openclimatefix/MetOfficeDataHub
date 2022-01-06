@@ -9,19 +9,19 @@ from metofficeamd.models import FileDetails, OrderDetails, OrderList, RunList, R
 class MetOfficeAMD:
     """Main class for connection and retrieving data from Met Office Weather DataHub AMD"""
 
-    def __init__(self, cache_dir: str = "./temp"):
+    def __init__(self, cache_dir: str = "./temp", client_id: str = None, client_secret: str = None):
 
-        if "API_KEY" in os.environ:
+        if client_id is None:
             self.client_id = os.environ["API_KEY"]
         else:
             # add warning
-            self.client_id = 'dummy_client_id'
+            self.client_id = client_id
 
-        if "API_SECRET" in os.environ:
+        if client_secret is None:
             self.client_secret = os.environ["API_SECRET"]
         else:
             # add warning
-            self.client_secret = 'dummy_client_secret'
+            self.client_secret = client_secret
 
         self.make_connection()
         self.make_headers()

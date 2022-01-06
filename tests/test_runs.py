@@ -9,7 +9,7 @@ import tempfile
 def test_get_runs(mock_get):
     mock_get.return_value = mock_get_run_list()
     
-    amd = MetOfficeAMD()
+    amd = MetOfficeAMD(client_id='fake', client_secret='fake')
     amd.get_runs()
 
 
@@ -19,5 +19,5 @@ def test_get_runs_model_id(mock_get):
     
     model_id = "mo-uk"
 
-    amd = MetOfficeAMD()
+    amd = MetOfficeAMD(client_id='fake', client_secret='fake')
     amd.get_runs_model_id(model_id=model_id)
