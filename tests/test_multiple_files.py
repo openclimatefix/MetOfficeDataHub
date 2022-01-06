@@ -2,7 +2,7 @@ from unittest import mock
 
 import xarray as xr
 
-from metofficeamd.app import MetOfficeAMD
+from metofficeamd.multiple_files import MetOfficeAMD
 from tests.conftest import mocked_requests_get
 
 

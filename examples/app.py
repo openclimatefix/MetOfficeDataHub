@@ -1,5 +1,5 @@
 """ Here's an example how to download all files from our order and then load them into xarray dataset """
-from metofficeamd.app import MetOfficeAMD
+from metofficeamd.multiple_files import MetOfficeAMD
 
 client_id = "xxx"
 client_secret = "yyy"
