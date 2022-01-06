@@ -1,7 +1,7 @@
+import tempfile
 from unittest import mock
 
 import xarray as xr
-import tempfile
 
 from metofficeamd.multiple_files import MetOfficeAMD, save_to_zarr
 from tests.conftest import mocked_requests_get
