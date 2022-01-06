@@ -12,6 +12,7 @@ def mock_get(filename):
         data = json.load(json_file)
 
     response._content = json.dumps(data).encode()
+    response.status_code = 200
 
     return response
 
@@ -45,5 +46,6 @@ def mock_get_example_grib():
         data = file.read()
 
     response._content = data
+    response.status_code = 200
 
     return response

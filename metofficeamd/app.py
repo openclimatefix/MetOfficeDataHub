@@ -1,170 +1,106 @@
-""" Main application for the API wrapper """
-import os
+from metofficeamd.base import BaseMetOfficeAMD
+import cfgrib
+import xarray as xr
+import logging
 
-import requests
+logger = logging.getLogger(__name__)
 
-from metofficeamd.constants import DOMAIN, ROOT
-from metofficeamd.models import FileDetails, OrderDetails, OrderList, RunList, RunListForModel
+VARS_TO_DELETE = (
+    "unknown",
+    "valid_time",
+    "heightAboveGround",
+    "heightAboveGroundLayer",
+    "atmosphere",
+    "cloudBase",
+    "surface",
+    "meanSea",
+    "level",
+)
 
 
-class MetOfficeAMD:
-    """Main class for connection and retrieving data from Met Office Weather DataHub AMD"""
+class MetOfficeAMD(BaseMetOfficeAMD):
+    """ Class built on top of BaseMetOfficeAMD used for processing multiple files """
 
-    def __init__(
-        self,
-        cache_dir: str = "./temp_metofficeamd",
-        client_id: str = None,
-        client_secret: str = None,
-    ):
-        """
-        Initialise the class
+    def download_all_files(self):
+        """ Download all files in the latest"""
 
-        :param cache_dir: The directory were files are downloaded to
-        :param client_id: the client id for the api
-        :param client_secret: the client secret for the api
-        """
+        all_orders = self.get_orders()
 
-        if client_id is None:
-            self.client_id = os.environ["API_KEY"]
-        else:
-            # add warning
-            self.client_id = client_id
+        # loop over orders
+        self.files = []
+        for order in all_orders.orders:
 
-        if client_secret is None:
-            self.client_secret = os.environ["API_SECRET"]
-        else:
-            # add warning
-            self.client_secret = client_secret
+            logger.debug(f'Loading files from order {order.orderId}')
 
-        self.make_headers()
+            order_id = order.orderId
+            self.order_details = self.get_lastest_order(order_id=order_id)
 
-        self.cache_dir = cache_dir
+            # loop over all files
+            for file in self.order_details.files:
+                file_id = file.fileId
+                # get full file information
+                # file = self.get_latest_order_file_id(order_id=order_id, file_id=file_id).file
 
-    def make_headers(self):
-        """
-        Make header object
-        """
-        self.headers = {
-            "X-IBM-Client-Id": self.client_id,
-            "X-IBM-Client-Secret": self.client_secret,
-            "accept": "application/json",
-        }
+                # download file
+                filename = self.get_lastest_order_file_id_data(order_id=order_id, file_id=file_id)
 
-    def call_url(self, url: str, headers: dict = None) -> requests.Response:
-        """
-        Call url string using request library.
+                # put local file in file object
+                file.local_filename = filename
 
-        :param url: url to be called
-        :return: response from url
-        """
-        if headers is None:
-            headers = self.headers
+                self.files.append(file)
 
-        url = f"{url}?detail=MINIMAL"
+    def load_file(self, file) -> xr.Dataset:
+        """ Load one grib file"""
 
-        response = requests.get(url, headers=headers)
+        datasets_from_grib: list[xr.Dataset] = cfgrib.open_datasets(file)
 
-        # check response code 200 and show error if not
+        merged_ds = xr.merge(datasets_from_grib)
 
-        return response
+        return merged_ds
 
-    def get_orders(self) -> OrderList:
-        """Get a list of order"""
+    def load_all_files(self) -> xr.Dataset:
+        """ Load all files and join them together"""
 
-        response = self.call_url(url=f"https://{DOMAIN}/{ROOT}/orders")
+        # loop over all files and load them
+        all_datasets_per_filename = {}
+        for file in self.files:
+            variable = file.fileId
+            datetime = variable.split('_')[-2]
+            variable = variable.split('_')[1]
 
-        data = response.json()
+            # There seems to be two files that are the same, one with '+HH' and one with 'YYYYMMDDHH'
+            if datetime[0] != '+':
 
-        return OrderList(**data)
+                dataset = self.load_file(file=file.local_filename)
+                if variable not in all_datasets_per_filename.keys():
+                    all_datasets_per_filename[variable] = [dataset]
+                else:
+                    all_datasets_per_filename[variable].append(dataset)
 
-    def get_lastest_order(self, order_id) -> OrderDetails:
-        """
-        Provide a list of the latest available data files for the specified order.
+        # loop over different variables and join them together
+        all_dataset = []
+        for k, v in all_datasets_per_filename.items():
 
-        :param order_id: The order ID that you wish to retrieve information about. The Order ID can
-            be seen under a specific order on the Atmospheric Weather Data Tool Order Summary Page
-            or found in the list of orders in the JSON response from your call to /1.0.0/orders
-        :return: The latest order
-        """
+            # join all variables toegther
+            dataset = xr.concat(v, dim='step')
 
-        response = self.call_url(url=f"https://{DOMAIN}/{ROOT}/orders/{order_id}/latest")
+            # remove un-needed variables
+            for var in VARS_TO_DELETE:
+                if var in dataset.variables:
+                    del dataset[var]
 
-        data = response.json()["orderDetails"]
+            all_dataset.append(dataset)
 
-        return OrderDetails(**data)
+        dataset = xr.merge(all_dataset)
 
-    def get_lastest_order_file_id(self, order_id, file_id) -> FileDetails:
-        """
-        Provide the details of a specific file that can be obtained for the latest available data.
+        return dataset
 
-        :param order_id: The order ID that you wish to retrieve information about. The Order ID can
-            be seen under a specific order on the Atmospheric Weather Data Tool Order Summary Page
-            or found in the list of orders in the JSON response from your call to /1.0.0/orders
-        :param file_id: The file ID of the application/x-grib file you wish to retrieve information
-            about. The file IDs can be seen on the Atmospheric Weather Data Tool Order Summary Page
-             or found in the JSON response from your call to /1.0.0/orders/{orderId}/latest
-        :return: Pydantic object of the details of the file
-        """
 
-        response = self.call_url(url=f"https://{DOMAIN}/{ROOT}/orders/{order_id}/latest/{file_id}")
 
-        data = response.json()["fileDetails"]
 
-        return FileDetails(**data)
 
-    def get_lastest_order_file_id_data(self, order_id, file_id) -> str:
-        """
-        Gets the actual data for a specific file that can be obtained for the latest available data.
 
-        :param order_id: The order ID that you wish to retrieve information about. The Order ID can
-            be seen under a specific order on the Atmospheric Weather Data Tool Order Summary Page
-            or found in the list of orders in the JSON response from your call to /1.0.0/orders
-        :param file_id: The file ID of the application/x-grib file you wish to retrieve information
-            about. The file IDs can be seen on the Atmospheric Weather Data Tool Order Summary Page
-             or found in the JSON response from your call to /1.0.0/orders/{orderId}/latest
-        :return: filename where the data is downloaded to
-        """
 
-        headers = self.headers
-        headers["Accept"] = "application/x-grib"
-        headers["accept"] = "application/x-grib"
-        data = self.call_url(
-            url=f"https://{DOMAIN}/{ROOT}/orders/{order_id}/latest/{file_id}/data",
-            headers=headers,
-        )
 
-        filename = f"{self.cache_dir}/{order_id}_{file_id}.grib"
-        if not os.path.isdir(self.cache_dir):
-            os.mkdir(self.cache_dir)
 
-        with open(filename, mode="wb") as localfile:
-            localfile.write(data.content)
 
-        return filename
-
-    def get_runs(self) -> RunList:
-        """
-        List all runs
-
-        :return: pydantic object of run list
-        """
-
-        response = self.call_url(url=f"https://{DOMAIN}/{ROOT}/runs")
-
-        data = response.json()
-
-        return RunList(**data)
-
-    def get_runs_model_id(self, model_id) -> RunListForModel:
-        """
-        List all runs for specific model
-
-        :param model_id: the model id we are looking for
-        :return: Pydantic object of specific run list for a model
-        """
-
-        response = self.call_url(url=f"https://{DOMAIN}/{ROOT}/runs/{model_id}")
-
-        data = response.json()
-
-        return RunListForModel(**data)

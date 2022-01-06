@@ -2,7 +2,7 @@
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, root_validator
 
 
 class Extent(BaseModel):
@@ -28,6 +28,8 @@ class File(BaseModel):
     fileId: str
     runDateTime: datetime
     run: int
+    local_filename: Optional[str]
+    timesteps: Optional[List[int]]
 
 
 class OrderList(BaseModel):
