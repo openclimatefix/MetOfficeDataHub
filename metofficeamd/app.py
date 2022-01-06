@@ -1,4 +1,4 @@
-import http.client
+""" Main application for the API wrapper """
 import os
 import requests
 
@@ -15,6 +15,13 @@ class MetOfficeAMD:
         client_id: str = None,
         client_secret: str = None,
     ):
+        """
+        Initialise the class
+
+        :param cache_dir: The directory were files are downloaded to
+        :param client_id: the client id for the api
+        :param client_secret: the client secret for the api
+        """
 
         if client_id is None:
             self.client_id = os.environ["API_KEY"]
@@ -28,15 +35,14 @@ class MetOfficeAMD:
             # add warning
             self.client_secret = client_secret
 
-        self.make_connection()
         self.make_headers()
 
         self.cache_dir = cache_dir
 
-    def make_connection(self):
-        self.conn = http.client.HTTPSConnection(DOMAIN)
-
     def make_headers(self):
+        """
+        Make header object
+        """
         self.headers = {
             "X-IBM-Client-Id": self.client_id,
             "X-IBM-Client-Secret": self.client_secret,
@@ -55,7 +61,7 @@ class MetOfficeAMD:
 
         url = f"{url}?detail=MINIMAL"
 
-        response = requests.get(url, headers=self.headers)
+        response = requests.get(url, headers=headers)
 
         # check response code 200 and show error if not
 
@@ -96,7 +102,7 @@ class MetOfficeAMD:
         :param file_id: The file ID of the application/x-grib file you wish to retrieve information
             about. The file IDs can be seen on the Atmospheric Weather Data Tool Order Summary Page
              or found in the JSON response from your call to /1.0.0/orders/{orderId}/latest
-        :return:
+        :return: Pydantic object of the details of the file
         """
 
         response = self.call_url(url=f"https://{DOMAIN}/{ROOT}/orders/{order_id}/latest/{file_id}")
@@ -115,7 +121,7 @@ class MetOfficeAMD:
         :param file_id: The file ID of the application/x-grib file you wish to retrieve information
             about. The file IDs can be seen on the Atmospheric Weather Data Tool Order Summary Page
              or found in the JSON response from your call to /1.0.0/orders/{orderId}/latest
-        :return:
+        :return: filename where the data is downloaded to
         """
 
         headers = self.headers
@@ -139,7 +145,7 @@ class MetOfficeAMD:
         """
         List all runs
 
-        :return:
+        :return: pydantic object of run list
         """
 
         response = self.call_url(url=f"https://{DOMAIN}/{ROOT}/runs")
@@ -150,9 +156,10 @@ class MetOfficeAMD:
 
     def get_runs_model_id(self, model_id) -> RunListForModel:
         """
+        List all runs for specific model
 
-        :param model_id:
-        :return:
+        :param model_id: the model id we are looking for
+        :return: Pydantic object of specific run list for a model
         """
 
         response = self.call_url(url=f"https://{DOMAIN}/{ROOT}/runs/{model_id}")
