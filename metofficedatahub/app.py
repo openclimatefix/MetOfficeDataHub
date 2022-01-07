@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
     "--api-secret",
     default=None,
     envvar="API_SECRET",
-    help="The API secret for MetOffice Weather DataHub AMD",
+    help="The API secret for MetOffice Weather DataHub",
     type=click.STRING,
 )
 @click.option(

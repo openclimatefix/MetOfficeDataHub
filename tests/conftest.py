@@ -1,6 +1,18 @@
 import json
+import pytest
 
 from metofficedatahub.constants import DOMAIN, ROOT
+from metofficedatahub.base import BaseMetOfficeDataHub
+from metofficedatahub.multiple_files import MetOfficeDataHub
+
+@pytest.fixture
+def basemetofficedatahub():
+    return BaseMetOfficeDataHub(client_id="fake", client_secret="fake")
+
+
+@pytest.fixture
+def metofficedatahub():
+    return MetOfficeDataHub(client_id="fake", client_secret="fake")
 
 
 def mocked_requests_get(*args, **kwargs):

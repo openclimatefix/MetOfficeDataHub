@@ -43,7 +43,7 @@ You can run the script directly as a CLI using:
 ```bash
 python3 metofficedatahub/app.py --save-dir="s3://bucket/folder"
 ```
-which will download all the files from NWP, join them together into a xarray dataset, and then save them.
+which will download all the files from Weather DataHub, join them together into a xarray dataset, and then save them.
 
 ## Docker
 
