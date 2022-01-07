@@ -6,8 +6,10 @@ import logging
 from typing import List, Optional
 
 import cfgrib
+import fsspec
 import numcodecs
 import pandas as pd
+import s3fs
 import xarray as xr
 
 from metofficeamd.base import BaseMetOfficeAMD
@@ -117,14 +119,38 @@ def save_to_zarr(dataset: xr.Dataset, save_dir: str, save_latest: bool = True):
         The zarr file will be saved using the timestamp of the run in isoformat
     :param save_latest: option to save as 'latest.zarr'
     """
+
+    logger.info(f"Saving data to zarr file here: {save_dir}")
+
+    # Make two files names
+    # 1. use the date timestamp of the data. Idea is that this will keep the historic
+    # 2. the latest - shows the most recent data without search through historic.
     filename = pd.to_datetime(dataset.time.values).tz_localize("UTC").isoformat()
     filename_and_path = f"{save_dir}/{filename}.zarr"
-    filename_and_path_latest = f"{save_dir}/latest.zarr"
+    filename_and_path_latest = f"{save_dir}/latest.zarr/"
 
+    # extra step needed if we are saving to AWS.
+    # There may be different steps if saving to different file systems
+    if fsspec.open(save_dir).fs == s3fs.S3FileSystem():
+        filename_and_path = fsspec.get_mapper(
+            filename_and_path, client_kwargs={"region_name": "eu-central-1"}
+        )
+        filename_and_path_latest = fsspec.get_mapper(
+            filename_and_path_latest, client_kwargs={"region_name": "eu-central-1"}
+        )
+
+    # encoding
     encoding = {
         var: {"compressor": numcodecs.Blosc(cname="zstd", clevel=5)} for var in dataset.data_vars
     }
 
+    # option to save latest or not
     if save_latest:
-        dataset.to_zarr(filename_and_path_latest, mode="w", encoding=encoding)
-    dataset.to_zarr(filename_and_path, mode="w", encoding=encoding)
+        logger.debug(f"Saving latest file {filename_and_path_latest}")
+        dataset.to_zarr(
+            store=filename_and_path_latest, mode="w", encoding=encoding, consolidated=True
+        )
+
+    # save historic data
+    logger.debug(f"Saving file {filename_and_path}")
+    dataset.to_zarr(store=filename_and_path, mode="w", encoding=encoding, consolidated=True)

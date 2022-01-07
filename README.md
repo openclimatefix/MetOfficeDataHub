@@ -12,6 +12,18 @@ Your need to register and obtain a API key and secret. This should be placed in 
 
 ```pip install metofficeamd```
 
+## Application
+
+You can run it directly with python using 
+```
+python3 metofficeamd/app.py --save-dir="s3://bucket/folder"
+```
+which will download all the files from NWP, join them together into a xarray dataset, and then save them.
+
+### docker
+
+TODO
+
 
 # Data variables
 
