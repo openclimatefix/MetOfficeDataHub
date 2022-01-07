@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
     "--api-key",
     default=None,
     envvar="API_KEY",
-    help="The API key for MetOffice Weather DataHub AMD",
+    help="The API key for MetOffice Weather DataHub",
     type=click.STRING,
 )
 @click.option(
@@ -34,7 +34,7 @@ def run(api_key, api_secret, save_dir):
     """Run main application
 
     1. Get data from API, download grip files
-    2. load grib files to one Xarray Dataset
+    2. Load grib files to one Xarray Dataset
     3. Save to directory
     """
 
@@ -42,7 +42,7 @@ def run(api_key, api_secret, save_dir):
     datahub = MetOfficeDataHub(client_id=api_key, client_secret=api_secret)
     datahub.download_all_files()
 
-    # 2. load grib files to one Xarray Dataset
+    # 2. Load grib files to one Xarray Dataset
     data = datahub.load_all_files()
 
     # 3. Save to directory

@@ -12,7 +12,7 @@ setup(
     name="metofficedatahub",
     version="0.0.4",
     license="MIT",
-    description="Python wrapper for Met Office Weather DataHub API",
+    description="Python wrapper for the UK Met Office Weather DataHub API",
     author="Peter Dudfield",
     author_email="info@openclimatefix.org",
     company="Open Climate Fix Ltd",

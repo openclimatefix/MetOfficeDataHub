@@ -1,8 +1,8 @@
-This folder contains example files
+This folder contains various example files.
 
-# Json
+# JSON
 
-The json files are trimmed down versions of really files
+The JSON files are trimmed down versions of actual files.
 
 # GRIB
 
