@@ -36,10 +36,24 @@ python3 metofficeamd/app.py --save-dir="s3://bucket/folder"
 ```
 which will download all the files from NWP, join them together into a xarray dataset, and then save them.
 
-## docker
+## Docker
+The application can be run using docker
+### Dockerhub
 
-TODO
+You can pull the production docker image from docker hub using
+```bash
+docker pull TODO
+```
 
+### local
+You can also build your own docker image locally using
+```bash
+docker build -t metofficeamd -f infrastructure/docker/Dockerfile .
+```
+and then to run the docker file use
+```bash
+docker 
+```
 
 # Data variables
 
