@@ -15,7 +15,7 @@ class BaseMetOfficeDataHub:
 
     def __init__(
         self,
-        cache_dir: str = "./temp_metofficeamd",
+        cache_dir: str = "./temp_metofficedatahub",
         client_id: str = None,
         client_secret: str = None,
     ):
