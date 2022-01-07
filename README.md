@@ -37,7 +37,7 @@ datahub.download_all_files(order_ids=["test_order_id"])
 data = datahub.load_all_files()
 ```
 
-### Application
+### CLI
 
 You can run the script directly as a CLI using:
 ```bash
