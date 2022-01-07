@@ -11,5 +11,5 @@ jobs:
       - name: Build docker file
         uses: docker/build-push-action@v1
         with:
-          file: ./infrastructure/docker/Dockerfile
+          file: infrastructure/docker/Dockerfile
           push: false
