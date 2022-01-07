@@ -17,17 +17,13 @@ COPY requirements.txt app/requirements.txt
 RUN pip install -r app/requirements.txt
 
 # copy library files
-COPY metofficeamd/ app/metofficeamd/
+COPY metofficedatahub/ app/metofficedatahub/
 
 # change to app folder
 WORKDIR /app
 
 # install library
-#RUN pip uninstall cfgrib
-#RUN pip install ecmwflibs
-#RUN pip install eccodes==1.3.1
-#RUN pip install cfgrib
 RUN pip install -e .
 
 # Example commnad that can be used, need to set API_KEY, API_SECRET and SAVE_DIR
-CMD ["python", "-u","metofficeamd/app.py"]
+CMD ["python", "-u","metofficedatahub/app.py"]

@@ -12,7 +12,7 @@ import pandas as pd
 import s3fs
 import xarray as xr
 
-from metofficeamd.base import BaseMetOfficeAMD
+from metofficedatahub.base import BaseMetOfficeDataHub
 
 logger = logging.getLogger(__name__)
 
@@ -29,8 +29,8 @@ VARS_TO_DELETE = (
 )
 
 
-class MetOfficeAMD(BaseMetOfficeAMD):
-    """Class built on top of BaseMetOfficeAMD used for processing multiple files"""
+class MetOfficeDataHub(BaseMetOfficeDataHub):
+    """Class built on top of BaseMetOfficeDataHub used for processing multiple files"""
 
     def download_all_files(self, order_ids: Optional[List[str]] = None):
         """Download all files in the latest"""

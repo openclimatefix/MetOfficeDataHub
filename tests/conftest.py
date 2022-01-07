@@ -1,6 +1,6 @@
 import json
 
-from metofficeamd.constants import DOMAIN, ROOT
+from metofficedatahub.constants import DOMAIN, ROOT
 
 
 def mocked_requests_get(*args, **kwargs):
