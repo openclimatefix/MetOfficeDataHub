@@ -1,6 +1,6 @@
+import os
 import tempfile
 from unittest import mock
-import os
 
 from tests.conftest import mocked_requests_get
 
@@ -36,5 +36,7 @@ def test_latest_order_file_id_data(mock_get, basemetofficedatahub):
 
     with tempfile.TemporaryDirectory() as tmpdirname:
         basemetofficedatahub.cache_dir = tmpdirname
-        filename = basemetofficedatahub.get_lastest_order_file_id_data(order_id=order_id, file_id=file_id)
+        filename = basemetofficedatahub.get_lastest_order_file_id_data(
+            order_id=order_id, file_id=file_id
+        )
         assert os.path.exists(filename)

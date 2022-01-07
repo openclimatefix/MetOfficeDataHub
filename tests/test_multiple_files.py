@@ -16,7 +16,6 @@ def test_download_all_none(mock_get, metofficedatahub):
     assert len(metofficedatahub.files) == 0
 
 
-
 @mock.patch("requests.get", side_effect=mocked_requests_get)
 def test_download_all(mock_get, metofficedatahub):
     """Check that if there are order ids, then  data is downloaded"""
@@ -47,4 +46,4 @@ def test_save_to_zarr(mock_get, metofficedatahub):
     with tempfile.TemporaryDirectory() as tmpdirname:
         save_to_zarr(data, save_dir=tmpdirname)
 
-        assert os.path.exists(f'{tmpdirname}/latest.zarr')
+        assert os.path.exists(f"{tmpdirname}/latest.zarr")
