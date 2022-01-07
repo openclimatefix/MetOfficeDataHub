@@ -22,7 +22,7 @@ as `API_KEY` and `API_SECRET`.
 ### Installation
 
 Install directly from pypi using
-```pip install metofficedatahub```
+```pip install metoffice-weather-datahub```
 
 ### Example
 
