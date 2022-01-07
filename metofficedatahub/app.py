@@ -13,14 +13,14 @@ logger = logging.getLogger(__name__)
     "--api-key",
     default=None,
     envvar="API_KEY",
-    help="The API key for MetOffice Weather DataHub datahub",
+    help="The API key for MetOffice Weather DataHub AMD",
     type=click.STRING,
 )
 @click.option(
     "--api-secret",
     default=None,
     envvar="API_SECRET",
-    help="The API secret for MetOffice Weather DataHub datahub",
+    help="The API secret for MetOffice Weather DataHub AMD",
     type=click.STRING,
 )
 @click.option(
