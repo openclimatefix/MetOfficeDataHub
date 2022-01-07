@@ -31,11 +31,11 @@ Install directly from pypi using
 from metofficedatahub.multiple_files import MetOfficeDataHub
 
 # 1. Get data from API, download grib files
-amd = MetOfficeDataHub(client_id="fake", client_secret="fake")
-amd.download_all_files(order_ids=["test_order_id"])
+datahub = MetOfficeDataHub(client_id="fake", client_secret="fake")
+datahub.download_all_files(order_ids=["test_order_id"])
 
 # 2. load grib files to one Xarray Dataset
-data = amd.load_all_files()
+data = datahub.load_all_files()
 ```
 
 ### Application
@@ -55,14 +55,15 @@ You can pull the production docker image from docker hub using
 docker pull TODO
 ```
 
+
 ### local
 You can also build your own docker image locally using
 ```bash
-docker build -t metofficeamd -f infrastructure/docker/Dockerfile .
+docker build -t metofficedatahub -f infrastructure/docker/Dockerfile .
 ```
 and then to run the docker file use
 ```bash
-docker run -it -e API_KEY=change -e API_SECRET=change -e SAVE_DIR='save_dir' metofficeamd
+docker run -it -e API_KEY=change -e API_SECRET=change -e SAVE_DIR='save_dir' metofficedatahub
 ```
 
 # Data variables

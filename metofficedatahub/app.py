@@ -41,11 +41,11 @@ def run(api_key, api_secret, save_dir):
 
     logger.info(f'Running application and saving to "{save_dir}"')
     # 1. Get data from API, download grip files
-    amd = MetOfficeDataHub(client_id=api_key, client_secret=api_secret)
-    amd.download_all_files()
+    datahub = MetOfficeDataHub(client_id=api_key, client_secret=api_secret)
+    datahub.download_all_files()
 
     # 2. load grib files to one Xarray Dataset
-    data = amd.load_all_files()
+    data = datahub.load_all_files()
 
     # 3. Save to directory
     save_to_zarr(dataset=data, save_dir=save_dir)

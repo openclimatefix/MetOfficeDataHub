@@ -19,4 +19,4 @@ def test_save_to_zarr(mock_get):
         )
         assert response.exit_code == 0
 
-        # amd = run(client_id="fake", client_secret="fake",save_dir=tmpdirname)
+        # datahub = run(client_id="fake", client_secret="fake",save_dir=tmpdirname)
