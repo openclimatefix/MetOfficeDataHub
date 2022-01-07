@@ -18,4 +18,3 @@ def test_save_to_zarr(mock_get):
             run, ["--api-key", "fake", "--api-secret", "fake", "--save-dir", tmpdirname]
         )
         assert response.exit_code == 0
-
