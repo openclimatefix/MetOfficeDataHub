@@ -110,6 +110,36 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
         return dataset
 
 
+def make_output_filenames(dataset: xr.Dataset, save_dir: str) -> List[str]:
+    """
+    Make two filenames to be saved
+
+    # 1. use the date timestamp of the data. Idea is that this will keep the historic
+    # 2. the latest - shows the most recent data without search through historic.
+
+    :param dataset: The Xarray Dataset to be save
+    :param save_dir: the directory where data is saved.
+        The zarr file will be saved using the timestamp of the run in isoformat
+    """
+
+    # make file names
+    filename = pd.to_datetime(dataset.time.values).tz_localize("UTC").isoformat()
+    filename_and_path = f"{save_dir}/{filename}.zarr"
+    filename_and_path_latest = f"{save_dir}/latest.zarr/"
+
+    # extra step needed if we are saving to AWS.
+    # There may be different steps if saving to different file systems
+    if fsspec.open(save_dir).fs == s3fs.S3FileSystem():
+        filename_and_path = fsspec.get_mapper(
+            filename_and_path, client_kwargs={"region_name": "eu-central-1"}
+        )
+        filename_and_path_latest = fsspec.get_mapper(
+            filename_and_path_latest, client_kwargs={"region_name": "eu-central-1"}
+        )
+
+    return [filename_and_path, filename_and_path_latest]
+
+
 def save_to_zarr(dataset: xr.Dataset, save_dir: str, save_latest: bool = True):
     """
     Save dataset to zarr file
@@ -125,21 +155,10 @@ def save_to_zarr(dataset: xr.Dataset, save_dir: str, save_latest: bool = True):
     # Make two files names
     # 1. use the date timestamp of the data. Idea is that this will keep the historic
     # 2. the latest - shows the most recent data without search through historic.
-    filename = pd.to_datetime(dataset.time.values).tz_localize("UTC").isoformat()
-    filename_and_path = f"{save_dir}/{filename}.zarr"
-    filename_and_path_latest = f"{save_dir}/latest.zarr/"
+    filename_and_path, filename_and_path_latest \
+        = make_output_filenames(dataset=dataset,save_dir=save_dir)
 
-    # extra step needed if we are saving to AWS.
-    # There may be different steps if saving to different file systems
-    if fsspec.open(save_dir).fs == s3fs.S3FileSystem():
-        filename_and_path = fsspec.get_mapper(
-            filename_and_path, client_kwargs={"region_name": "eu-central-1"}
-        )
-        filename_and_path_latest = fsspec.get_mapper(
-            filename_and_path_latest, client_kwargs={"region_name": "eu-central-1"}
-        )
-
-    # encoding
+    # encoding used when saving to zarr file
     encoding = {
         var: {"compressor": numcodecs.Blosc(cname="zstd", clevel=5)} for var in dataset.data_vars
     }
