@@ -4,7 +4,7 @@ from unittest import mock
 import xarray as xr
 from click.testing import CliRunner
 
-from metofficeamd.app import run
+from metofficedatahub.app import run
 from tests.conftest import mocked_requests_get
 
 runner = CliRunner()

@@ -1,9 +1,9 @@
-# MetOfficeAMD
+# MetOfficeDataHub
 Python wrapper around MetOffice Atmospheric Model Data REST API
 
 [![codecov](https://codecov.io/gh/openclimatefix/MetOfficeAMD/branch/main/graph/badge.svg?token=64JOBKZNCI)](https://codecov.io/gh/openclimatefix/MetOfficeAMD)
 
-MetOfficeAMD is a simple wrapper for the API provided by the British Met Office 
+MetOfficeDataHub is a simple wrapper for the API provided by the British Met Office 
 <https://metoffice.apiconnect.ibmcloud.com/metoffice/production/>_ known as Weather DataHub. 
 It can be used to retrieve weather observations and forecasts. The aim is to focus on the AMD - 
 Atmosphere Model Data REST API 

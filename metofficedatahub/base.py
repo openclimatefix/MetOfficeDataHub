@@ -4,13 +4,13 @@ import os
 
 import requests
 
-from metofficeamd.constants import DOMAIN, ROOT
-from metofficeamd.models import FileDetails, OrderDetails, OrderList, RunList, RunListForModel
+from metofficedatahub.constants import DOMAIN, ROOT
+from metofficedatahub.models import FileDetails, OrderDetails, OrderList, RunList, RunListForModel
 
 logger = logging.getLogger(__name__)
 
 
-class BaseMetOfficeAMD:
+class BaseMetOfficeDataHub:
     """Main class for connection and retrieving data from Met Office Weather DataHub AMD"""
 
     def __init__(
