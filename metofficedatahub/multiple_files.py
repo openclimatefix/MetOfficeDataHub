@@ -155,8 +155,9 @@ def save_to_zarr(dataset: xr.Dataset, save_dir: str, save_latest: bool = True):
     # Make two files names
     # 1. use the date timestamp of the data. Idea is that this will keep the historic
     # 2. the latest - shows the most recent data without search through historic.
-    filename_and_path, filename_and_path_latest \
-        = make_output_filenames(dataset=dataset,save_dir=save_dir)
+    filename_and_path, filename_and_path_latest = make_output_filenames(
+        dataset=dataset, save_dir=save_dir
+    )
 
     # encoding used when saving to zarr file
     encoding = {
