@@ -6,6 +6,7 @@ import click
 from metofficeamd.multiple_files import MetOfficeAMD, save_to_zarr
 
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s %(levelname)s:%(message)s')
 
 
 @click.command()
@@ -38,6 +39,7 @@ def run(api_key, api_secret, save_dir):
     3. Save to directory
     """
 
+    logger.info(f'Running application and saving to "{save_dir}"')
     # 1. Get data from API, download grip files
     amd = MetOfficeAMD(client_id=api_key, client_secret=api_secret)
     amd.download_all_files()
