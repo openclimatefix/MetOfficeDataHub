@@ -7,3 +7,5 @@ cfgrib
 xarray
 numcodecs
 zarr
+fsspec
+s3fs
