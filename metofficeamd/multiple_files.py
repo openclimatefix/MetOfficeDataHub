@@ -3,13 +3,13 @@
 This gives an easy way to download all files from an order
 """
 import logging
-import fsspec
-import s3fs
 from typing import List, Optional
 
 import cfgrib
+import fsspec
 import numcodecs
 import pandas as pd
+import s3fs
 import xarray as xr
 
 from metofficeamd.base import BaseMetOfficeAMD
