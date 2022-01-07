@@ -8,19 +8,35 @@ MetOfficeAMD is a simple wrapper for the API provided by the British Met Office 
 ## Access
 Your need to register and obtain a API key and secret. This should be placed in environment variables as `API_KEY` and `API_SECRET`
 
-## Installation
+## Python
 
+### Installation
+
+Install directly from pypi using
 ```pip install metofficeamd```
 
-## Application
+### Example
+
+```python
+from metofficeamd.multiple_files import MetOfficeAMD
+
+# 1. Get data from API, download grip files
+amd = MetOfficeAMD(client_id="fake", client_secret="fake")
+amd.download_all_files(order_ids=["test_order_id"])
+
+ # 2. load grib files to one Xarray Dataset
+data = amd.load_all_files()
+```
+
+### Application
 
 You can run it directly with python using 
-```
+```bash
 python3 metofficeamd/app.py --save-dir="s3://bucket/folder"
 ```
 which will download all the files from NWP, join them together into a xarray dataset, and then save them.
 
-### docker
+## docker
 
 TODO
 
