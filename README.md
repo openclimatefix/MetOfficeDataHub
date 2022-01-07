@@ -31,11 +31,11 @@ Install directly from pypi using
 from metofficedatahub.multiple_files import MetOfficeDataHub
 
 # 1. Get data from API, download grib files
-amd = MetOfficeDataHub(client_id="fake", client_secret="fake")
-amd.download_all_files(order_ids=["test_order_id"])
+datahub = MetOfficeDataHub(client_id="fake", client_secret="fake")
+datahub.download_all_files(order_ids=["test_order_id"])
 
 # 2. load grib files to one Xarray Dataset
-data = amd.load_all_files()
+data = datahub.load_all_files()
 ```
 
 ### Application
@@ -49,7 +49,6 @@ which will download all the files from NWP, join them together into a xarray dat
 ## docker
 
 TODO
-
 
 # Data variables
 

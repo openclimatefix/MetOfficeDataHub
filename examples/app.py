@@ -5,6 +5,6 @@ client_id = "xxx"
 client_secret = "yyy"
 
 
-amd = MetOfficeDataHub(client_id=client_id, client_secret=client_id)
-amd.download_all_files()
-xr = amd.load_all_files()
+datahub = MetOfficeDataHub(client_id=client_id, client_secret=client_id)
+datahub.download_all_files()
+xr = datahub.load_all_files()
