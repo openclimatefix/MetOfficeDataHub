@@ -28,7 +28,7 @@ WORKDIR /app
 # install library
 RUN pip install -e .
 
-RUN if [ "TESTING" = 1 ]; then pip install pytest; fi
+RUN if [ "$TESTING" = 1 ]; then pip install pytest; fi
 
 # Example commnad that can be used, need to set API_KEY, API_SECRET and SAVE_DIR
 CMD ["python", "-u","metofficedatahub/app.py"]
