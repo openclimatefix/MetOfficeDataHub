@@ -52,7 +52,7 @@ docker build -t metofficeamd -f infrastructure/docker/Dockerfile .
 ```
 and then to run the docker file use
 ```bash
-docker 
+docker run -it -e API_KEY=change -e API_SECRET=change -e SAVE_DIR='save_dir' metofficeamd
 ```
 
 # Data variables
