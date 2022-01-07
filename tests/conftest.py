@@ -1,9 +1,11 @@
 import json
+
 import pytest
 
-from metofficedatahub.constants import DOMAIN, ROOT
 from metofficedatahub.base import BaseMetOfficeDataHub
+from metofficedatahub.constants import DOMAIN, ROOT
 from metofficedatahub.multiple_files import MetOfficeDataHub
+
 
 @pytest.fixture
 def basemetofficedatahub():
