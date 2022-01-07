@@ -4,18 +4,18 @@ import os
 
 import requests
 
-from metofficeamd.constants import DOMAIN, ROOT
-from metofficeamd.models import FileDetails, OrderDetails, OrderList, RunList, RunListForModel
+from metofficedatahub.constants import DOMAIN, ROOT
+from metofficedatahub.models import FileDetails, OrderDetails, OrderList, RunList, RunListForModel
 
 logger = logging.getLogger(__name__)
 
 
-class BaseMetOfficeAMD:
+class BaseMetOfficeDataHub:
     """Main class for connection and retrieving data from Met Office Weather DataHub AMD"""
 
     def __init__(
         self,
-        cache_dir: str = "./temp_metofficeamd",
+        cache_dir: str = "./temp_metofficedatahub",
         client_id: str = None,
         client_secret: str = None,
     ):
@@ -94,7 +94,6 @@ class BaseMetOfficeAMD:
         """
 
         response = self.call_url(url=f"https://{DOMAIN}/{ROOT}/orders/{order_id}/latest")
-
         data = response.json()["orderDetails"]
 
         return OrderDetails(**data)
@@ -115,7 +114,6 @@ class BaseMetOfficeAMD:
         response = self.call_url(url=f"https://{DOMAIN}/{ROOT}/orders/{order_id}/latest/{file_id}")
 
         data = response.json()["fileDetails"]
-        print(data)
 
         return FileDetails(**data)
 
