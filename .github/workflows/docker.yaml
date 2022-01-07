@@ -9,7 +9,7 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v2
       - name: Build docker file
-        uses: docker/build-push-action@v1
+        uses: docker/build-push-action@v2
         with:
           file: infrastructure/docker/Dockerfile
           push: false
