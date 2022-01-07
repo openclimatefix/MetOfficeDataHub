@@ -120,7 +120,7 @@ def save_to_zarr(dataset: xr.Dataset, save_dir: str, save_latest: bool = True):
     :param save_latest: option to save as 'latest.zarr'
     """
 
-    logger.info(f'Saving data to zarr file here: {save_dir}')
+    logger.info(f"Saving data to zarr file here: {save_dir}")
 
     # Make two files names
     # 1. use the date timestamp of the data. Idea is that this will keep the historic
@@ -129,12 +129,15 @@ def save_to_zarr(dataset: xr.Dataset, save_dir: str, save_latest: bool = True):
     filename_and_path = f"{save_dir}/{filename}.zarr"
     filename_and_path_latest = f"{save_dir}/latest.zarr/"
 
-    # extra step needed if we are saving to AWS. They may be different steps if saving to different file systems
+    # extra step needed if we are saving to AWS.
+    # There may be different steps if saving to different file systems
     if fsspec.open(save_dir).fs == s3fs.S3FileSystem():
-        filename_and_path = fsspec.get_mapper(filename_and_path,
-                                   client_kwargs={'region_name': 'eu-central-1'})
-        filename_and_path_latest = fsspec.get_mapper(filename_and_path_latest,
-                                              client_kwargs={'region_name': 'eu-central-1'})
+        filename_and_path = fsspec.get_mapper(
+            filename_and_path, client_kwargs={"region_name": "eu-central-1"}
+        )
+        filename_and_path_latest = fsspec.get_mapper(
+            filename_and_path_latest, client_kwargs={"region_name": "eu-central-1"}
+        )
 
     # encoding
     encoding = {
@@ -143,10 +146,11 @@ def save_to_zarr(dataset: xr.Dataset, save_dir: str, save_latest: bool = True):
 
     # option to save latest or not
     if save_latest:
-        logger.debug(f'Saving latest file {filename_and_path_latest}')
-        dataset.to_zarr(store=filename_and_path_latest, mode="w", encoding=encoding,consolidated=True)
+        logger.debug(f"Saving latest file {filename_and_path_latest}")
+        dataset.to_zarr(
+            store=filename_and_path_latest, mode="w", encoding=encoding, consolidated=True
+        )
 
     # save historic data
-    logger.debug(f'Saving file {filename_and_path}')
-    dataset.to_zarr(store=filename_and_path, mode="w", encoding=encoding,consolidated=True)
-
+    logger.debug(f"Saving file {filename_and_path}")
+    dataset.to_zarr(store=filename_and_path, mode="w", encoding=encoding, consolidated=True)
