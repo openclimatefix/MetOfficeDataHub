@@ -3,19 +3,19 @@ Python wrapper around MetOffice Atmospheric Model Data REST API
 
 [![codecov](https://codecov.io/gh/openclimatefix/MetOfficeAMD/branch/main/graph/badge.svg?token=64JOBKZNCI)](https://codecov.io/gh/openclimatefix/MetOfficeAMD)
 
-MetOfficeAMD is a simple wrapper for the API provided by the British Met Office 
-<https://metoffice.apiconnect.ibmcloud.com/metoffice/production/>_ known as Weather DataHub. 
-It can be used to retrieve weather observations and forecasts. The aim is to focus on the AMD - 
-Atmosphere Model Data REST API 
+MetOfficeAMD is a simple wrapper for the API provided by the British Met Office
+<https://metoffice.apiconnect.ibmcloud.com/metoffice/production/>_ known as Weather DataHub.
+It can be used to retrieve weather observations and forecasts. The aim is to focus on the AMD -
+Atmosphere Model Data REST API
 <https://metoffice.apiconnect.ibmcloud.com/metoffice/production/product/17502/api/16908>
 
-This currently download only the latest results, i.e no historic data can be fetched. 
-The timestamp can be seen in the grib / xarray files. 
+This currently download only the latest results, i.e no historic data can be fetched.
+The timestamp can be seen in the grib / xarray files.
 
-This (unofficial) library has been built and is maintained by OCF, not the MetOffice. 
+This (unofficial) library has been built and is maintained by OCF, not the MetOffice.
 
 ## Access
-Your need to register and obtain an API key and secret. This should be placed in environment variables 
+Your need to register and obtain an API key and secret. This should be placed in environment variables
 as `API_KEY` and `API_SECRET`
 
 ## Python
@@ -40,7 +40,7 @@ data = amd.load_all_files()
 
 ### Application
 
-You can run it directly with python using 
+You can run it directly with python using
 ```bash
 python3 metofficeamd/app.py --save-dir="s3://bucket/folder"
 ```
