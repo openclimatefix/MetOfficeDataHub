@@ -6,7 +6,7 @@ import click
 from metofficedatahub.multiple_files import MetOfficeDataHub, save_to_zarr
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s:%(message)s")
 
 
 @click.command()
