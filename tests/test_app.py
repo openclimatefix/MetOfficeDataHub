@@ -18,5 +18,3 @@ def test_save_to_zarr(mock_get):
             run, ["--api-key", "fake", "--api-secret", "fake", "--save-dir", tmpdirname]
         )
         assert response.exit_code == 0
-
-        # datahub = run(client_id="fake", client_secret="fake",save_dir=tmpdirname)
