@@ -7,11 +7,15 @@ on:
 jobs:
   bump-version:
     uses: openclimatefix/.github/.github/workflows/bump-version.yml@docker-release
+
   python-release:
+    needs: [bump-version]
     uses: openclimatefix/.github/.github/workflows/python-release-only.yml@docker-release
     secrets:
       token: ${{ secrets.PYPI_API_TOKEN }}
+
   docker-release:
+    needs: [python-release]
     uses: openclimatefix/.github/.github/workflows/docker-release-only.yml@docker-release
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
