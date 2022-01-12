@@ -7,7 +7,10 @@ on:
 jobs:
   bump-version-python-docker-release:
     uses: openclimatefix/.github/.github/workflows/python-docker-release.yml@docker-release
-    secrets:
+    with:
       token: ${{ secrets.PYPI_API_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      image_base_name: metoffice_weather_datahub
+      docker_file: infrastructure/docker/Dockerfile
+

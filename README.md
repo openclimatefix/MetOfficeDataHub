@@ -54,7 +54,7 @@ The application can be run using docker
 
 You can pull the production docker image from docker hub using
 ```bash
-docker pull TODO
+docker pull openclimatefix/metoffice_weather_datahub
 ```
 
 
