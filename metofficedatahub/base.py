@@ -146,7 +146,13 @@ class BaseMetOfficeDataHub:
             )
 
             if not os.path.isdir(self.cache_dir):
-                os.mkdir(self.cache_dir)
+                try:
+                    os.mkdir(self.cache_dir)
+                except Exception as e:
+                    logger.error(e)
+                    raise Exception(f'Could not make directory {self.cache_dir}. '
+                                    f'Will carry on anyway in case the folder '
+                                    f'has been made already')
 
             with open(filename, mode="wb") as localfile:
                 localfile.write(data.content)
