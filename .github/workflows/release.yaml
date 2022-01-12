@@ -14,4 +14,3 @@ jobs:
     with:
       image_base_name: metoffice_weather_datahub
       docker_file: infrastructure/docker/Dockerfile
-
