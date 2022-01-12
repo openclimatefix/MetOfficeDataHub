@@ -106,6 +106,7 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
             all_dataset.append(dataset)
 
         dataset = xr.merge(all_dataset)
+        logger.debug("Loaded all files")
 
         return dataset
 

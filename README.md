@@ -4,7 +4,7 @@
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 Python wrapper around MetOffice Atmospheric Model Data REST API
 
-[![codecov](https://codecov.io/gh/openclimatefix/MetOfficeAMD/branch/main/graph/badge.svg?token=64JOBKZNCI)](https://codecov.io/gh/openclimatefix/MetOfficeAMD)
+[![codecov](https://codecov.io/gh/openclimatefix/MetOfficeDataHub/branch/main/graph/badge.svg?token=64JOBKZNCI)](https://codecov.io/gh/openclimatefix/MetOfficeDataHub)
 
 MetOfficeDataHub is a simple wrapper for [the API provided by the British Met Office](https://metoffice.apiconnect.ibmcloud.com/metoffice/production/) known as Weather DataHub.
 It can be used to retrieve weather observations and forecasts. The aim is to focus on the AMD -
@@ -49,8 +49,23 @@ python3 metofficedatahub/app.py --save-dir="s3://bucket/folder"
 which will download all the files from Weather DataHub, join them together into a xarray dataset, and then save them.
 
 ## Docker
+The application can be run using docker
 
-TODO
+You can pull the production docker image from docker hub using
+```bash
+docker pull TODO
+```
+
+
+### local
+You can also build your own docker image locally using
+```bash
+docker build -t metofficedatahub -f infrastructure/docker/Dockerfile .
+```
+and then to run the docker file use
+```bash
+docker run -it -e API_KEY=change -e API_SECRET=change -e SAVE_DIR='save_dir' metofficedatahub
+```
 
 # Data variables
 
