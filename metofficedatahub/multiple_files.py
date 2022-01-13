@@ -123,8 +123,15 @@ def make_output_filenames(dataset: xr.Dataset, save_dir: str) -> List[str]:
         The zarr file will be saved using the timestamp of the run in isoformat
     """
 
+    # get time of predictions
+    time = pd.to_datetime(dataset.time.values)
+
+    # if there are multiple times, just select the first one
+    if type(time) == pd.DatetimeIndex:
+        time = time[0]
+
     # make file names
-    filename = pd.to_datetime(dataset.time.values).tz_localize("UTC").isoformat()
+    filename = time.tz_localize("UTC").isoformat()
     filename_and_path = f"{save_dir}/{filename}.zarr"
     filename_and_path_latest = f"{save_dir}/latest.zarr/"
 
