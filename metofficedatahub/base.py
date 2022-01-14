@@ -117,7 +117,7 @@ class BaseMetOfficeDataHub:
 
         return FileDetails(**data)
 
-    def get_lastest_order_file_id_data(self, order_id, file_id, filename: str = None) -> str:
+    def get_latest_order_file_id_data(self, order_id, file_id, filename: str = None) -> str:
         """
         Gets the actual data for a specific file that can be obtained for the latest available data.
 
@@ -158,6 +158,8 @@ class BaseMetOfficeDataHub:
 
             with open(filename, mode="wb") as localfile:
                 localfile.write(data.content)
+        else:
+            logger.debug(f'{filename} already exsits so not downloading new one')
 
         return filename
 

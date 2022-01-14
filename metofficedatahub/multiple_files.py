@@ -59,7 +59,7 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
                 if datetime[0] != "+":
 
                     # download file
-                    filename = self.get_lastest_order_file_id_data(
+                    filename = self.get_latest_order_file_id_data(
                         order_id=order_id, file_id=file_id
                     )
 
@@ -122,6 +122,8 @@ def make_output_filenames(dataset: xr.Dataset, save_dir: str) -> List[str]:
     :param save_dir: the directory where data is saved.
         The zarr file will be saved using the timestamp of the run in isoformat
     """
+
+    logger.debug('Making file names for saving data')
 
     # get time of predictions
     time = pd.to_datetime(dataset.time.values)

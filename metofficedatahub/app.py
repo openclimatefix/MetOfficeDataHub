@@ -2,11 +2,14 @@
 import logging
 
 import click
+import os
 
 from metofficedatahub.multiple_files import MetOfficeDataHub, save_to_zarr
 
-logger = logging.getLogger(__name__)
 logging.basicConfig(format="%(asctime)s %(name)s %(levelname)s:%(message)s")
+logging.getLogger('metofficedatahub').setLevel(getattr(logging, os.environ.get('LOG_LEVEL', 'INFO')))
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
 @click.command()
@@ -31,23 +34,13 @@ logging.basicConfig(format="%(asctime)s %(name)s %(levelname)s:%(message)s")
     help="Where to save the zarr files",
     type=click.STRING,
 )
-@click.option(
-    "--log-level",
-    default="INFO",
-    envvar="LOG_LEVEL",
-    help="Set the logging level",
-    type=click.STRING,
-)
-def run(api_key, api_secret, save_dir, log_level):
+def run(api_key, api_secret, save_dir):
     """Run main application
 
     1. Get data from API, download grip files
     2. Load grib files to one Xarray Dataset
     3. Save to directory
     """
-
-    logger.info(f'Setting logging level to {log_level}')
-    logging.basicConfig(level=getattr(logging, log_level))
 
     logger.info(f'Running application and saving to "{save_dir}"')
     # 1. Get data from API, download grip files
@@ -59,6 +52,8 @@ def run(api_key, api_secret, save_dir, log_level):
 
     # 3. Save to directory
     save_to_zarr(dataset=data, save_dir=save_dir)
+
+    logger.info(f'Finished Running application.')
 
 
 if __name__ == "__main__":
