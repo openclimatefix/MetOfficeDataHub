@@ -49,6 +49,8 @@ python3 metofficedatahub/app.py --save-dir="s3://bucket/folder"
 ```
 which will download all the files from Weather DataHub, join them together into a xarray dataset, and then save them.
 
+You can set the environmental variable `LOG_LEVEL` to define what [log level](https://docs.python.org/3.9/library/logging.html) you would like.
+
 ## Docker
 The application can be run using docker
 

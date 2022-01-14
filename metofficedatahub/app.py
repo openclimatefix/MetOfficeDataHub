@@ -1,12 +1,16 @@
 """ Application that pulls data from the Metoffice API and saves to a zarr file"""
 import logging
+import os
 
 import click
 
 from metofficedatahub.multiple_files import MetOfficeDataHub, save_to_zarr
 
+logging.basicConfig(format="%(asctime)s %(name)s %(levelname)s:%(message)s")
+logging.getLogger("metofficedatahub").setLevel(
+    getattr(logging, os.environ.get("LOG_LEVEL", "INFO"))
+)
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s:%(message)s")
 
 
 @click.command()
@@ -49,6 +53,8 @@ def run(api_key, api_secret, save_dir):
 
     # 3. Save to directory
     save_to_zarr(dataset=data, save_dir=save_dir)
+
+    logger.info("Finished Running application.")
 
 
 if __name__ == "__main__":
