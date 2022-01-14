@@ -10,7 +10,6 @@ logging.basicConfig(format="%(asctime)s %(name)s %(levelname)s:%(message)s")
 logging.getLogger('metofficedatahub').\
     setLevel(getattr(logging, os.environ.get('LOG_LEVEL', 'INFO')))
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
 
 
 @click.command()
