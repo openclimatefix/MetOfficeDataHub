@@ -34,7 +34,7 @@ logging.basicConfig(format="%(asctime)s %(name)s %(levelname)s:%(message)s")
 @click.option(
     "--log-level",
     default="INFO",
-    envvar="SAVE_DIR",
+    envvar="LOG_LEVEL",
     help="Set the logging level",
     type=click.STRING,
 )
