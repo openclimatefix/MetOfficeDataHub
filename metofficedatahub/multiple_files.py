@@ -123,7 +123,7 @@ def make_output_filenames(dataset: xr.Dataset, save_dir: str) -> List[str]:
         The zarr file will be saved using the timestamp of the run in isoformat
     """
 
-    logger.debug('Making file names for saving data')
+    logger.debug("Making file names for saving data")
 
     # get time of predictions
     time = pd.to_datetime(dataset.time.values)

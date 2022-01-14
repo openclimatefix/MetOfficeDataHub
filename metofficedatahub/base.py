@@ -159,7 +159,7 @@ class BaseMetOfficeDataHub:
             with open(filename, mode="wb") as localfile:
                 localfile.write(data.content)
         else:
-            logger.debug(f'{filename} already exsits so not downloading new one')
+            logger.debug(f"{filename} already exsits so not downloading new one")
 
         return filename
 
