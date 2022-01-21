@@ -5,6 +5,7 @@ This gives an easy way to download all files from an order
 import logging
 from typing import List, Optional
 
+import tempfile
 import cfgrib
 import fsspec
 import numcodecs
@@ -140,16 +141,16 @@ def make_output_filenames(
     # make file names
     filename = time.tz_localize("UTC").isoformat()
     filename_and_path = f"{save_dir}/{filename}.{output_type}"
-    filename_and_path_latest = f"{save_dir}/latest.{output_type}/"
+    filename_and_path_latest = f"{save_dir}/latest.{output_type}"
 
     # extra step needed if we are saving to AWS.
     # There may be different steps if saving to different file systems
-    if fsspec.open(save_dir).fs == s3fs.S3FileSystem():
+    if fsspec.open(save_dir).fs == s3fs.S3FileSystem() and output_type == 'zarr':
         filename_and_path = fsspec.get_mapper(
-            filename_and_path, client_kwargs={"region_name": "eu-central-1"}
+            filename_and_path, client_kwargs={"region_name": "eu-west-1"}
         )
         filename_and_path_latest = fsspec.get_mapper(
-            filename_and_path_latest, client_kwargs={"region_name": "eu-central-1"}
+            filename_and_path_latest, client_kwargs={"region_name": "eu-west-1"}
         )
 
     return [filename_and_path, filename_and_path_latest]
@@ -186,16 +187,36 @@ def save(dataset: xr.Dataset, save_dir: str, save_latest: bool = True, output_ty
     # option to save latest or not
     if save_latest:
         logger.debug(f"Saving latest file {filename_and_path_latest}")
+
         if output_type == "zarr":
             dataset.to_zarr(
                 store=filename_and_path_latest, mode="w", encoding=encoding, consolidated=True
             )
         else:
-            dataset.to_netcdf(path=filename_and_path_latest, mode="w", engine="h5netcdf")
+            save_to_netcdf_to_s3(dataset=dataset, filename=filename_and_path_latest)
 
     # save historic data
     logger.debug(f"Saving file {filename_and_path}")
     if output_type == "zarr":
         dataset.to_zarr(store=filename_and_path, mode="w", encoding=encoding, consolidated=True)
     else:
-        dataset.to_netcdf(path=filename_and_path, mode="w", engine="h5netcdf")
+        save_to_netcdf_to_s3(dataset=dataset, filename=filename_and_path)
+
+
+def save_to_netcdf_to_s3(dataset: xr.Dataset,filename:str):
+    """ Save xarray to netcdf in s3
+
+    1. Save in temp local dir
+    2. upload to s3
+
+    :param dataset: The Xarray Dataset to be save
+    :param filename: The s3 filname
+    """
+    with tempfile.TemporaryDirectory() as dir:
+        # save locally
+        path = f'{dir}/temp.netcdf'
+        dataset.to_netcdf(path=path, mode="w", engine="h5netcdf")
+
+        # save to s3
+        filesystem = fsspec.open(filename).fs
+        filesystem.put(path, filename)
