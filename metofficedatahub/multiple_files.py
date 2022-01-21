@@ -155,9 +155,7 @@ def make_output_filenames(
     return [filename_and_path, filename_and_path_latest]
 
 
-def save(
-    dataset: xr.Dataset, save_dir: str, save_latest: bool = True, output_type: str = "netcdf"
-):
+def save(dataset: xr.Dataset, save_dir: str, save_latest: bool = True, output_type: str = "netcdf"):
     """
     Save dataset to zarr file
 
