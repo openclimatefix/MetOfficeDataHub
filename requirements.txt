@@ -9,3 +9,4 @@ numcodecs
 zarr
 fsspec
 s3fs
+h5netcdf
