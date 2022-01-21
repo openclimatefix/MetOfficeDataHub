@@ -145,7 +145,7 @@ def make_output_filenames(
 
     # extra step needed if we are saving to AWS.
     # There may be different steps if saving to different file systems
-    if fsspec.open(save_dir).fs == s3fs.S3FileSystem() and output_type == 'zarr':
+    if fsspec.open(save_dir).fs == s3fs.S3FileSystem() and output_type == "zarr":
         filename_and_path = fsspec.get_mapper(
             filename_and_path, client_kwargs={"region_name": "eu-west-1"}
         )
@@ -203,8 +203,8 @@ def save(dataset: xr.Dataset, save_dir: str, save_latest: bool = True, output_ty
         save_to_netcdf_to_s3(dataset=dataset, filename=filename_and_path)
 
 
-def save_to_netcdf_to_s3(dataset: xr.Dataset,filename:str):
-    """ Save xarray to netcdf in s3
+def save_to_netcdf_to_s3(dataset: xr.Dataset, filename: str):
+    """Save xarray to netcdf in s3
 
     1. Save in temp local dir
     2. upload to s3
@@ -214,7 +214,7 @@ def save_to_netcdf_to_s3(dataset: xr.Dataset,filename:str):
     """
     with tempfile.TemporaryDirectory() as dir:
         # save locally
-        path = f'{dir}/temp.netcdf'
+        path = f"{dir}/temp.netcdf"
         dataset.to_netcdf(path=path, mode="w", engine="h5netcdf")
 
         # save to s3
