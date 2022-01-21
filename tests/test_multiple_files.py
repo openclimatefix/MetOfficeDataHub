@@ -4,7 +4,7 @@ from unittest import mock
 
 import xarray as xr
 
-from metofficedatahub.multiple_files import save_to_zarr
+from metofficedatahub.multiple_files import save
 from tests.conftest import mocked_requests_get
 
 
@@ -44,6 +44,17 @@ def test_save_to_zarr(mock_get, metofficedatahub):
     data = metofficedatahub.load_all_files()
 
     with tempfile.TemporaryDirectory() as tmpdirname:
-        save_to_zarr(data, save_dir=tmpdirname)
+        save(data, save_dir=tmpdirname, output_type='zarr')
 
         assert os.path.exists(f"{tmpdirname}/latest.zarr")
+
+@mock.patch("requests.get", side_effect=mocked_requests_get)
+def test_save_to_netcdf(mock_get, metofficedatahub):
+
+    metofficedatahub.download_all_files(order_ids=["test_order_id"])
+    data = metofficedatahub.load_all_files()
+
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        save(data, save_dir=tmpdirname)
+
+        assert os.path.exists(f"{tmpdirname}/latest.netcdf")

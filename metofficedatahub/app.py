@@ -4,7 +4,7 @@ import os
 
 import click
 
-from metofficedatahub.multiple_files import MetOfficeDataHub, save_to_zarr
+from metofficedatahub.multiple_files import MetOfficeDataHub, save
 
 logging.basicConfig(format="%(asctime)s %(name)s %(levelname)s:%(message)s")
 logging.getLogger("metofficedatahub").setLevel(
@@ -52,7 +52,7 @@ def run(api_key, api_secret, save_dir):
     data = datahub.load_all_files()
 
     # 3. Save to directory
-    save_to_zarr(dataset=data, save_dir=save_dir)
+    save(dataset=data, save_dir=save_dir)
 
     logger.info("Finished Running application.")
 
