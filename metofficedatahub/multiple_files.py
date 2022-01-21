@@ -3,9 +3,9 @@
 This gives an easy way to download all files from an order
 """
 import logging
+import tempfile
 from typing import List, Optional
 
-import tempfile
 import cfgrib
 import fsspec
 import numcodecs
