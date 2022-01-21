@@ -191,11 +191,11 @@ def save(dataset: xr.Dataset, save_dir: str, save_latest: bool = True, output_ty
                 store=filename_and_path_latest, mode="w", encoding=encoding, consolidated=True
             )
         else:
-            dataset.to_netcdf(path=filename_and_path_latest, mode="w")
+            dataset.to_netcdf(path=filename_and_path_latest, mode="w", engine='h5netcdf')
 
     # save historic data
     logger.debug(f"Saving file {filename_and_path}")
     if output_type == "zarr":
         dataset.to_zarr(store=filename_and_path, mode="w", encoding=encoding, consolidated=True)
     else:
-        dataset.to_netcdf(path=filename_and_path, mode="w")
+        dataset.to_netcdf(path=filename_and_path, mode="w", engine='h5netcdf')
