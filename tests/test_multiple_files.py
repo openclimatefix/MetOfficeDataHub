@@ -44,9 +44,10 @@ def test_save_to_zarr(mock_get, metofficedatahub):
     data = metofficedatahub.load_all_files()
 
     with tempfile.TemporaryDirectory() as tmpdirname:
-        save(data, save_dir=tmpdirname, output_type='zarr')
+        save(data, save_dir=tmpdirname, output_type="zarr")
 
         assert os.path.exists(f"{tmpdirname}/latest.zarr")
+
 
 @mock.patch("requests.get", side_effect=mocked_requests_get)
 def test_save_to_netcdf(mock_get, metofficedatahub):
