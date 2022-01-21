@@ -111,7 +111,9 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
         return dataset
 
 
-def make_output_filenames(dataset: xr.Dataset, save_dir: str) -> List[str]:
+def make_output_filenames(
+    dataset: xr.Dataset, save_dir: str, output_type: str = "netcdf"
+) -> List[str]:
     """
     Make two filenames to be saved
 
@@ -121,9 +123,12 @@ def make_output_filenames(dataset: xr.Dataset, save_dir: str) -> List[str]:
     :param dataset: The Xarray Dataset to be save
     :param save_dir: the directory where data is saved.
         The zarr file will be saved using the timestamp of the run in isoformat
+    :param output_type: what file type should it be saved as.
+        The options 'are netcdf' or 'zarr'
     """
 
     logger.debug("Making file names for saving data")
+    assert output_type in ["zarr", "netcdf"]
 
     # get time of predictions
     time = pd.to_datetime(dataset.time.values)
@@ -134,8 +139,8 @@ def make_output_filenames(dataset: xr.Dataset, save_dir: str) -> List[str]:
 
     # make file names
     filename = time.tz_localize("UTC").isoformat()
-    filename_and_path = f"{save_dir}/{filename}.zarr"
-    filename_and_path_latest = f"{save_dir}/latest.zarr/"
+    filename_and_path = f"{save_dir}/{filename}.{output_type}"
+    filename_and_path_latest = f"{save_dir}/latest.{output_type}/"
 
     # extra step needed if we are saving to AWS.
     # There may be different steps if saving to different file systems
@@ -150,23 +155,27 @@ def make_output_filenames(dataset: xr.Dataset, save_dir: str) -> List[str]:
     return [filename_and_path, filename_and_path_latest]
 
 
-def save_to_zarr(dataset: xr.Dataset, save_dir: str, save_latest: bool = True):
+def save(dataset: xr.Dataset, save_dir: str, save_latest: bool = True, output_type: str = "netcdf"):
     """
     Save dataset to zarr file
 
     :param dataset: The Xarray Dataset to be save
     :param save_dir: the directory where data is saved.
         The zarr file will be saved using the timestamp of the run in isoformat
-    :param save_latest: option to save as 'latest.zarr'
+    :param save_latest: option to save as 'latest.netcdf'
+    :param output_type: what file type should it be saved as.
+        The options 'are netcdf' or 'zarr'
     """
 
-    logger.info(f"Saving data to zarr file here: {save_dir}")
+    logger.info(f"Saving data to {output_type} file here: {save_dir}")
+
+    assert output_type in ["zarr", "netcdf"]
 
     # Make two files names
     # 1. use the date timestamp of the data. Idea is that this will keep the historic
     # 2. the latest - shows the most recent data without search through historic.
     filename_and_path, filename_and_path_latest = make_output_filenames(
-        dataset=dataset, save_dir=save_dir
+        dataset=dataset, save_dir=save_dir, output_type=output_type
     )
 
     # encoding used when saving to zarr file
@@ -177,10 +186,16 @@ def save_to_zarr(dataset: xr.Dataset, save_dir: str, save_latest: bool = True):
     # option to save latest or not
     if save_latest:
         logger.debug(f"Saving latest file {filename_and_path_latest}")
-        dataset.to_zarr(
-            store=filename_and_path_latest, mode="w", encoding=encoding, consolidated=True
-        )
+        if output_type == "zarr":
+            dataset.to_zarr(
+                store=filename_and_path_latest, mode="w", encoding=encoding, consolidated=True
+            )
+        else:
+            dataset.to_netcdf(path=filename_and_path_latest, mode="w", engine="h5netcdf")
 
     # save historic data
     logger.debug(f"Saving file {filename_and_path}")
-    dataset.to_zarr(store=filename_and_path, mode="w", encoding=encoding, consolidated=True)
+    if output_type == "zarr":
+        dataset.to_zarr(store=filename_and_path, mode="w", encoding=encoding, consolidated=True)
+    else:
+        dataset.to_netcdf(path=filename_and_path, mode="w", engine="h5netcdf")
