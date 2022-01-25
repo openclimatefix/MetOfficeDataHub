@@ -77,7 +77,7 @@ When the data is loaded they are given a short name. Here is are some common exa
 - mcc   : Medium-level cloud cover in %.
 - hcc   : High-level cloud cover in %.
 - sde   : Snow depth in meters.
-- dswrf : Downward longwave radiation flux - ground
+- dlwrf : Downward longwave radiation flux - ground
 - t     : Air temperature at 1 meter above surface in Kelvin.
 - r     : Relative humidty in %.
 - vis   : Visibility in meters.
