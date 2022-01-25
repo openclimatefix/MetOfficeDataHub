@@ -97,7 +97,6 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
                 if var in dataset.variables:
                     del dataset[var]
 
-
             if variable not in all_datasets_per_filename.keys():
                 all_datasets_per_filename[variable] = [dataset]
             else:
@@ -108,7 +107,7 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
         for k, v in all_datasets_per_filename.items():
 
             # add time as dimension
-            v = [vv.expand_dims('time') for vv in v]
+            v = [vv.expand_dims("time") for vv in v]
 
             # join all variables together
             dataset = xr.merge(v)
