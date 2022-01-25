@@ -1,6 +1,5 @@
 import numpy as np
 import xarray as xr
-
 from multiple_files import logger
 
 DY_METERS = DX_METERS = 2_000
@@ -34,7 +33,7 @@ VARS_TO_DELETE = (
 
 
 def add_x_y(dataset: xr.Dataset) -> xr.Dataset:
-    """ Add x and y coordinates"""
+    """Add x and y coordinates"""
 
     return dataset.assign_coords(
         {
@@ -71,10 +70,9 @@ def post_process_dataset(dataset: xr.Dataset) -> xr.Dataset:
     da = da.reindex(y=y_reversed)
 
     return (
-        da
-            .to_dataset()
-            .rename({"time": "init_time"})
-            .chunk(
+        da.to_dataset()
+        .rename({"time": "init_time"})
+        .chunk(
             {
                 "init_time": 1,
                 "step": 1,
@@ -82,4 +80,5 @@ def post_process_dataset(dataset: xr.Dataset) -> xr.Dataset:
                 "x": len(dataset.x) // 2,
                 "variable": -1,
             }
-        ))
+        )
+    )
