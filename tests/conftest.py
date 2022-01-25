@@ -6,7 +6,10 @@ from metofficedatahub.base import BaseMetOfficeDataHub
 from metofficedatahub.constants import DOMAIN, ROOT
 from metofficedatahub.multiple_files import MetOfficeDataHub
 
-
+"""
+To run this tests local you may need to add
+export PYTHONPATH=${PYTHONPATH}:/tests 
+"""
 @pytest.fixture
 def basemetofficedatahub():
     return BaseMetOfficeDataHub(client_id="fake", client_secret="fake")
