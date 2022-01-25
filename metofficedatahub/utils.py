@@ -59,7 +59,6 @@ def post_process_dataset(dataset: xr.Dataset) -> xr.Dataset:
     # Adapted from:
     # https://stackoverflow.com/questions/54677161/xarray-reverse-an-array-along-one-coordinate
     y_reversed = da.y[::-1]
-    print(da)
     da = da.reindex(y=y_reversed)
 
     return (
