@@ -20,24 +20,13 @@ EASTING = np.arange(start=WEST, stop=EAST, step=DX_METERS, dtype=np.int32)
 NUM_ROWS = len(NORTHING)
 NUM_COLS = len(EASTING)
 
-# Define a set of grib variables to delete in load_grib_file().
-VARS_TO_DELETE = (
-    "unknown",
-    "valid_time",
-    "heightAboveGround",
-    "heightAboveGroundLayer",
-    "atmosphere",
-    "cloudBase",
-    "surface",
-    "meanSea",
-    "level",
-    "latitude",
-    "longitude",
-)
-
 
 def add_x_y(dataset: xr.Dataset) -> xr.Dataset:
-    """Add x and y coordinates"""
+    """Add x and y coordinates
+
+    This is specifically for the UK model,
+    see above where these values are made.
+    """
 
     return dataset.assign_coords(
         {
