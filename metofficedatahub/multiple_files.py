@@ -90,6 +90,14 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
             variable = variable.split("_")[1]
 
             dataset = self.load_file(file=file.local_filename)
+
+            # remove un-needed variables
+            for var in VARS_TO_DELETE:
+
+                if var in dataset.variables:
+                    del dataset[var]
+
+
             if variable not in all_datasets_per_filename.keys():
                 all_datasets_per_filename[variable] = [dataset]
             else:
@@ -99,13 +107,11 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
         all_dataset = []
         for k, v in all_datasets_per_filename.items():
 
-            # join all variables toegther
-            dataset = xr.merge(v)
+            # add time as dimension
+            v = [vv.expand_dims('time') for vv in v]
 
-            # remove un-needed variables
-            for var in VARS_TO_DELETE:
-                if var in dataset.variables:
-                    del dataset[var]
+            # join all variables together
+            dataset = xr.merge(v)
 
             all_dataset.append(dataset)
 
@@ -113,7 +119,6 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
         logger.debug("Loaded all files")
 
         dataset = add_x_y(dataset)
-        dataset = dataset.expand_dims("time", axis=0)
         dataset = post_process_dataset(dataset)
 
         return dataset

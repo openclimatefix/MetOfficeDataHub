@@ -45,7 +45,7 @@ def mocked_requests_get(*args, **kwargs):
         args[0]
         == f"https://{DOMAIN}/{ROOT}/orders/test_order_id/latest/agl_temperature_00/data?detail=MINIMAL"
     ):
-        filename = "test_order_id_agl_temperature_00.grib"
+        filename = "test_00.grib"
     elif args[0] == f"https://{DOMAIN}/{ROOT}/runs?detail=MINIMAL":
         filename = "run_list.json"
     elif args[0] == f"https://{DOMAIN}/{ROOT}/runs/mo-uk?detail=MINIMAL":

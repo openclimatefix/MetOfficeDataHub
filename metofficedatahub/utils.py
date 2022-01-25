@@ -1,6 +1,10 @@
+import logging
+
 import numpy as np
 import xarray as xr
-from multiple_files import logger
+import logging
+
+logger = logging.getLogger(__name__)
 
 DY_METERS = DX_METERS = 2_000
 

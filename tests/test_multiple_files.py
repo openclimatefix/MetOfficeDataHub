@@ -11,9 +11,12 @@ from tests.conftest import mocked_requests_get
 @mock.patch("requests.get", side_effect=mocked_requests_get)
 def test_download_all_none(mock_get, metofficedatahub):
     """Check that if there are no order ids, then no data is downloaded"""
-    metofficedatahub.download_all_files(order_ids=[])
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        metofficedatahub.cache_dir = tmpdirname
 
-    assert len(metofficedatahub.files) == 0
+        metofficedatahub.download_all_files(order_ids=[])
+
+        assert len(metofficedatahub.files) == 0
 
 
 @mock.patch("requests.get", side_effect=mocked_requests_get)
@@ -31,31 +34,40 @@ def test_download_all(mock_get, metofficedatahub):
 @mock.patch("requests.get", side_effect=mocked_requests_get)
 def test_load_all_files(mock_get, metofficedatahub):
 
-    metofficedatahub.download_all_files(order_ids=["test_order_id"])
-    data = metofficedatahub.load_all_files()
-    assert type(data) == xr.Dataset
-    assert len(data.data_vars) > 0
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        metofficedatahub.cache_dir = tmpdirname
+
+        metofficedatahub.download_all_files(order_ids=["test_order_id"])
+        data = metofficedatahub.load_all_files()
+        assert type(data) == xr.Dataset
+        assert len(data.data_vars) > 0
 
 
 @mock.patch("requests.get", side_effect=mocked_requests_get)
 def test_save_to_zarr(mock_get, metofficedatahub):
 
-    metofficedatahub.download_all_files(order_ids=["test_order_id"])
-    data = metofficedatahub.load_all_files()
-
     with tempfile.TemporaryDirectory() as tmpdirname:
-        save(data, save_dir=tmpdirname, output_type="zarr")
+        metofficedatahub.cache_dir = tmpdirname
 
-        assert os.path.exists(f"{tmpdirname}/latest.zarr")
+        metofficedatahub.download_all_files(order_ids=["test_order_id"])
+        data = metofficedatahub.load_all_files()
+
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            save(data, save_dir=tmpdirname, output_type="zarr")
+
+            assert os.path.exists(f"{tmpdirname}/latest.zarr")
 
 
 @mock.patch("requests.get", side_effect=mocked_requests_get)
 def test_save_to_netcdf(mock_get, metofficedatahub):
 
-    metofficedatahub.download_all_files(order_ids=["test_order_id"])
-    data = metofficedatahub.load_all_files()
-
     with tempfile.TemporaryDirectory() as tmpdirname:
-        save(data, save_dir=tmpdirname)
+        metofficedatahub.cache_dir = tmpdirname
 
-        assert os.path.exists(f"{tmpdirname}/latest.netcdf")
+        metofficedatahub.download_all_files(order_ids=["test_order_id"])
+        data = metofficedatahub.load_all_files()
+
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            save(data, save_dir=tmpdirname)
+
+            assert os.path.exists(f"{tmpdirname}/latest.netcdf")
