@@ -15,7 +15,7 @@ SOUTH = -22383.68950705031 + 4000
 EAST = 704564.7522423521 - 4000
 WEST = -212346.9701878212 + 4000
 
-NORTHING = np.arange(start=NORTH, stop=SOUTH, step=-DY_METERS, dtype=np.int32)
+NORTHING = np.arange(start=SOUTH, stop=NORTH, step=DY_METERS, dtype=np.int32)
 EASTING = np.arange(start=WEST, stop=EAST, step=DX_METERS, dtype=np.int32)
 NUM_ROWS = len(NORTHING)
 NUM_COLS = len(EASTING)
