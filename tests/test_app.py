@@ -21,12 +21,11 @@ def test_save_to_zarr(mock_get):
 
 
 @mock.patch("requests.get", side_effect=mocked_requests_get_error)
-def test_save_to_zarr(mock_get):
+def test_error(mock_get):
 
     with tempfile.TemporaryDirectory() as tmpdirname:
         response = runner.invoke(
             run, ["--api-key", "fake", "--api-secret", "fake", "--save-dir", tmpdirname]
         )
         assert response.exit_code == 1
-        print(response.exception)
 
