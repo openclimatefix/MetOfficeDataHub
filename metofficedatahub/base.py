@@ -70,7 +70,13 @@ class BaseMetOfficeDataHub:
 
         # check response code 200 and show error if not
         logger.debug(response.status_code)
-        assert response.status_code == 200
+        if response.status_code != 200:
+            message = (
+                f"Tried to call url but got response code "
+                f"{response.status_code} with message: {response.text}"
+            )
+            logger.debug(message)
+            raise Exception(message)
 
         return response
 

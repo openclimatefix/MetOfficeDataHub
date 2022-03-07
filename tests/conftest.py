@@ -62,3 +62,20 @@ def mocked_requests_get(*args, **kwargs):
             data = file.read()
 
     return MockResponse(data, 200)
+
+
+def mocked_requests_get_error():
+    class MockResponse:
+        def __init__(self, data, status_code):
+            self.json_data = data
+            self.status_code = status_code
+            self.content = data
+
+        def json(self):
+            return self.json_data
+
+        @property
+        def text(self):
+            return "Page does not exist"
+
+    return MockResponse("Page does not exist", 404)
