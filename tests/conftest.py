@@ -76,6 +76,6 @@ def mocked_requests_get_error():
 
         @property
         def text(self):
-            return 'Page does not exist'
+            return "Page does not exist"
 
-    return MockResponse('Page does not exist', 404)
+    return MockResponse("Page does not exist", 404)

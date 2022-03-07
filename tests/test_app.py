@@ -28,4 +28,3 @@ def test_error(mock_get):
             run, ["--api-key", "fake", "--api-secret", "fake", "--save-dir", tmpdirname]
         )
         assert response.exit_code == 1
-
