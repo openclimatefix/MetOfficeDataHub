@@ -70,7 +70,7 @@ def run(api_key, api_secret, save_dir, db_url: Optional[str] = None):
     if db_url is not None:
         connection = DatabaseConnection(url=db_url, base=Base_Forecast)
         with connection.get_session() as session:
-            update_latest_input_data_last_updated(session=session, component="satellite")
+            update_latest_input_data_last_updated(session=session, component="nwp")
 
     logger.info("Finished Running application.")
 
