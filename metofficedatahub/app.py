@@ -4,7 +4,6 @@ import os
 from typing import Optional
 
 import click
-
 from nowcasting_datamodel.connection import DatabaseConnection
 from nowcasting_datamodel.models.base import Base_Forecast
 from nowcasting_datamodel.read.read import update_latest_input_data_last_updated
@@ -47,7 +46,7 @@ logger = logging.getLogger(__name__)
     help="Database to save when this has run",
     type=click.STRING,
 )
-def run(api_key, api_secret, save_dir, db_url:Optional[str] = None):
+def run(api_key, api_secret, save_dir, db_url: Optional[str] = None):
     """Run main application
 
     1. Get data from API, download grip files

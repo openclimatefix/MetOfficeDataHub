@@ -2,13 +2,12 @@ import json
 import os
 
 import pytest
+from nowcasting_datamodel.connection import DatabaseConnection
+from nowcasting_datamodel.models.base import Base_Forecast
 
 from metofficedatahub.base import BaseMetOfficeDataHub
 from metofficedatahub.constants import DOMAIN, ROOT
 from metofficedatahub.multiple_files import MetOfficeDataHub
-
-from nowcasting_datamodel.connection import DatabaseConnection
-from nowcasting_datamodel.models.base import Base_Forecast
 
 """
 To run this tests local you may need to add
