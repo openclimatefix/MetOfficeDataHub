@@ -82,7 +82,8 @@ def mocked_requests_get(*args, **kwargs):
 
 
 def mocked_requests_get_error():
-    """ Mock API so it always gives 404 """
+    """Mock API so it always gives 404"""
+
     class MockResponse:
         def __init__(self, data, status_code):
             self.json_data = data

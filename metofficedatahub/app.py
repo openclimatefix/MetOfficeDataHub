@@ -47,7 +47,7 @@ logger = logging.getLogger(__name__)
     help="Database to save when this has run",
     type=click.STRING,
 )
-def run(api_key, api_secret, save_dir, db_url:Optional[str] = None):
+def run(api_key, api_secret, save_dir, db_url: Optional[str] = None):
     """Run main application
 
     1. Get data from API, download grip files
@@ -67,7 +67,7 @@ def run(api_key, api_secret, save_dir, db_url:Optional[str] = None):
     # 3. Save to directory
     save(dataset=data, save_dir=save_dir)
 
-    # 4.
+    # 4. update table to show when this data has been pulled
     if db_url is not None:
         connection = DatabaseConnection(url=db_url, base=Base_Forecast)
         with connection.get_session() as session:
