@@ -11,7 +11,7 @@ runner = CliRunner()
 
 
 @mock.patch("requests.get", side_effect=mocked_requests_get)
-def test_save_to_zarr(mock_get):
+def test_save_to_zarr(mock_get, db_connection):
 
     with tempfile.TemporaryDirectory() as tmpdirname:
         response = runner.invoke(
@@ -21,7 +21,7 @@ def test_save_to_zarr(mock_get):
 
 
 @mock.patch("requests.get", side_effect=mocked_requests_get_error)
-def test_error(mock_get):
+def test_error(mock_get, db_connection):
 
     with tempfile.TemporaryDirectory() as tmpdirname:
         response = runner.invoke(
