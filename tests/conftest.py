@@ -1,4 +1,5 @@
 import json
+import os
 
 import pytest
 
@@ -6,10 +7,26 @@ from metofficedatahub.base import BaseMetOfficeDataHub
 from metofficedatahub.constants import DOMAIN, ROOT
 from metofficedatahub.multiple_files import MetOfficeDataHub
 
+from nowcasting_datamodel.connection import DatabaseConnection
+from nowcasting_datamodel.models.base import Base_Forecast
+
 """
 To run this tests local you may need to add
 export PYTHONPATH=${PYTHONPATH}:/tests
 """
+
+
+@pytest.fixture
+def db_connection():
+
+    url = os.getenv("DB_URL", "sqlite:///test.db")
+
+    connection = DatabaseConnection(url=url, base=Base_Forecast, echo=False)
+    Base_Forecast.metadata.create_all(connection.engine)
+
+    yield connection
+
+    Base_Forecast.metadata.drop_all(connection.engine)
 
 
 @pytest.fixture

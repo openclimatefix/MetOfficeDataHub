@@ -12,3 +12,4 @@ s3fs
 h5netcdf
 scipy
 dask
+nowcasting_datamodel==0.0.36
