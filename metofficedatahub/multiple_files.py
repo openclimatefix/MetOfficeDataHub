@@ -116,9 +116,10 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
         # loop over different variables and join them together
         logger.debug("Joining the dataset together")
         all_dataset = []
-        for k in all_datasets_per_filename.keys():
+        keys = all_datasets_per_filename.keys()
+        for k in keys:
 
-            logger.debug(f"Merging dataset {k} out of {len(all_datasets_per_filename.keys())}")
+            logger.debug(f"Merging dataset {k} out of {len(keys)}")
 
             v = all_datasets_per_filename.pop(k)
 
