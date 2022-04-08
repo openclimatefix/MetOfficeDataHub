@@ -51,6 +51,8 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
 
             self.order_details = self.get_lastest_order(order_id=order_id)
 
+            logger.debug(f"There are {len(self.order_details.files)} files to load")
+
             # loop over all files
             for file in self.order_details.files:
                 file_id = file.fileId
@@ -82,6 +84,8 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
 
     def load_all_files(self) -> xr.Dataset:
         """Load all files and join them together"""
+
+        logger.info("Now loading all files and joining them together")
 
         # loop over all files and load them
         all_datasets_per_filename = {}
