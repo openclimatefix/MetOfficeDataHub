@@ -91,7 +91,10 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
 
         # loop over all files and load them
         all_datasets_per_filename = {}
-        for file in self.files:
+        for i, file in enumerate(self.files):
+
+            logger.debug(f'Loading file {i} out of {len(self.files)}')
+
             variable = file.fileId
             variable = variable.split("_")[1]
 
