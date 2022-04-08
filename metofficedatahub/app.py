@@ -11,10 +11,8 @@ from nowcasting_datamodel.read.read import update_latest_input_data_last_updated
 from metofficedatahub.multiple_files import MetOfficeDataHub, save
 
 logging.basicConfig(format="%(asctime)s %(name)s %(levelname)s:%(message)s")
-logging.getLogger("metofficedatahub").setLevel(
-    getattr(logging, os.environ.get("LOG_LEVEL", "INFO"))
-)
 logger = logging.getLogger(__name__)
+logger.setLevel(getattr(logging, os.environ.get("LOG_LEVEL", "INFO")))
 
 
 @click.command()
