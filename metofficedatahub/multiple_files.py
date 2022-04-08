@@ -73,7 +73,7 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
                     file.local_filename = filename
                     self.files.append(file)
 
-        logger.info('All files downloaded')
+        logger.info("All files downloaded")
 
     def load_file(self, file) -> xr.Dataset:
         """Load one grib file"""
@@ -93,7 +93,7 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
         all_datasets_per_filename = {}
         for i, file in enumerate(self.files):
 
-            logger.debug(f'Loading file {i} out of {len(self.files)}')
+            logger.debug(f"Loading file {i} out of {len(self.files)}")
 
             variable = file.fileId
             variable = variable.split("_")[1]
