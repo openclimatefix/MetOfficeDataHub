@@ -116,9 +116,11 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
         # loop over different variables and join them together
         logger.debug("Joining the dataset together")
         all_dataset = []
-        for k, v in all_datasets_per_filename.items():
+        for k in all_datasets_per_filename.keys():
 
             logger.debug(f"Merging dataset {k} out of {len(all_datasets_per_filename.keys())}")
+
+            v = all_datasets_per_filename.pop(k)
 
             # add time as dimension
             v = [vv.expand_dims("time") for vv in v]
