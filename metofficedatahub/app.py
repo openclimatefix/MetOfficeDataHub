@@ -12,14 +12,11 @@ from metofficedatahub.multiple_files import MetOfficeDataHub, save
 
 logging.basicConfig(format="%(asctime)s %(name)s %(levelname)s:%(message)s")
 logging.getLogger("metofficedatahub").setLevel(
-     getattr(logging, os.environ.get("LOG_LEVEL", "INFO"))
- )
-
-logger = logging.getLogger(__name__)
-logger.setLevel(
     getattr(logging, os.environ.get("LOG_LEVEL", "INFO"))
 )
 
+logger = logging.getLogger(__name__)
+logger.setLevel(getattr(logging, os.environ.get("LOG_LEVEL", "INFO")))
 
 
 @click.command()
