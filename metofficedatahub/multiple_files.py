@@ -73,6 +73,8 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
                     file.local_filename = filename
                     self.files.append(file)
 
+        logger.info('All files downloaded')
+
     def load_file(self, file) -> xr.Dataset:
         """Load one grib file"""
 
