@@ -39,7 +39,7 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
     def download_all_files(self, order_ids: Optional[List[str]] = None):
         """Download all files in the latest"""
 
-        logger.info('Downloading all files')
+        logger.info("Downloading all files")
 
         if order_ids is None:
             all_orders = self.get_orders()
