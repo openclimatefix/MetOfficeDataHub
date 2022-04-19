@@ -1,7 +1,7 @@
 import os
 import tempfile
-from unittest import mock
 from datetime import datetime
+from unittest import mock
 
 import xarray as xr
 

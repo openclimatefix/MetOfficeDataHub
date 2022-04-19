@@ -1,8 +1,8 @@
 """ Main application for the API wrapper """
 import logging
 import os
-import fsspec
 
+import fsspec
 import requests
 from pathy import Pathy
 
@@ -17,7 +17,7 @@ class BaseMetOfficeDataHub:
 
     def __init__(
         self,
-        cache_dir: str = os.getenv('RAW_DIR', "./temp_metofficedatahub"),
+        cache_dir: str = os.getenv("RAW_DIR", "./temp_metofficedatahub"),
         client_id: str = None,
         client_secret: str = None,
     ):
