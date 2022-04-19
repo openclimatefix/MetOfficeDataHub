@@ -89,11 +89,14 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
     def load_file(self, file) -> xr.Dataset:
         """Load one grib file"""
 
+        logger.debug(f'Loading {file}')
+
         # make tempfilename
         filename = file.split("/")[-1]
         temp_filename = f"{self.folder_to_download}/{filename}"
 
         # save from s3 to local temp
+        logger.debug(f'Moving {file} to {temp_filename}')
         fs = fsspec.open(file).fs
         fs.put(file, temp_filename)
 
