@@ -40,7 +40,10 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
     folder_to_download = 'temp'
 
     if ~os.path.exists(folder_to_download):
-        os.mkdir(folder_to_download)
+        try:
+            os.mkdir(folder_to_download)
+        except:
+            logger.debug(f'Could not make folder {folder_to_download}')
 
     def download_all_files(self, order_ids: Optional[List[str]] = None):
         """Download all files in the latest"""
