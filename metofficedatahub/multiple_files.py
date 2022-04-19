@@ -37,7 +37,7 @@ VARS_TO_DELETE = (
 class MetOfficeDataHub(BaseMetOfficeDataHub):
     """Class built on top of BaseMetOfficeDataHub used for processing multiple files"""
 
-    folder_to_download = 'temp'
+    folder_to_download = "temp"
 
     if ~os.path.exists(folder_to_download):
         try:
@@ -90,8 +90,8 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
         """Load one grib file"""
 
         # make tempfilename
-        filename = file.split('/')[-1]
-        temp_filename = f'{self.folder_to_download}/{filename}'
+        filename = file.split("/")[-1]
+        temp_filename = f"{self.folder_to_download}/{filename}"
 
         # save from s3 to local temp
         fs = fsspec.open(file).fs
