@@ -51,6 +51,9 @@ which will download all the files from Weather DataHub, join them together into 
 
 You can set the environmental variable `LOG_LEVEL` to define what [log level](https://docs.python.org/3.9/library/logging.html) you would like.
 
+It may also be worth setting 'RAW_DIR' so that the raw files are saved to a certain folder,
+and not downloded again if they are already there.
+
 ## Docker
 The application can be run using docker
 

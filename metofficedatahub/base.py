@@ -2,7 +2,9 @@
 import logging
 import os
 
+import fsspec
 import requests
+from pathy import Pathy
 
 from metofficedatahub.constants import DOMAIN, ROOT
 from metofficedatahub.models import FileDetails, OrderDetails, OrderList, RunList, RunListForModel
@@ -15,7 +17,7 @@ class BaseMetOfficeDataHub:
 
     def __init__(
         self,
-        cache_dir: str = "./temp_metofficedatahub",
+        cache_dir: str = os.getenv("RAW_DIR", "./temp_metofficedatahub"),
         client_id: str = None,
         client_secret: str = None,
     ):
@@ -144,16 +146,17 @@ class BaseMetOfficeDataHub:
             filename = f"{order_id}_{file_id}.grib"
 
         filename = f"{self.cache_dir}/{filename}"
-        if not os.path.exists(filename):
+        fs = fsspec.open(Pathy(self.cache_dir).parent).fs
+        if not fs.exists(filename):
 
             data = self.call_url(
                 url=f"https://{DOMAIN}/{ROOT}/orders/{order_id}/latest/{file_id}/data",
                 headers=headers,
             )
 
-            if not os.path.isdir(self.cache_dir):
+            if not fs.isdir(self.cache_dir):
                 try:
-                    os.mkdir(self.cache_dir)
+                    fs.mkdir(self.cache_dir)
                 except Exception as e:
                     logger.error(e)
                     raise Exception(
@@ -162,10 +165,10 @@ class BaseMetOfficeDataHub:
                         f"has been made already"
                     )
 
-            with open(filename, mode="wb") as localfile:
+            with fs.open(filename, mode="wb") as localfile:
                 localfile.write(data.content)
         else:
-            logger.debug(f"{filename} already exsits so not downloading new one")
+            logger.debug(f"{filename} already exists so not downloading new one")
 
         return filename
 
