@@ -14,6 +14,8 @@ import pandas as pd
 import s3fs
 import xarray as xr
 
+from pathy import Pathy
+
 from metofficedatahub.base import BaseMetOfficeDataHub
 from metofficedatahub.utils import add_x_y, post_process_dataset
 
@@ -97,8 +99,8 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
 
         # save from s3 to local temp
         logger.debug(f'Moving {file} to {temp_filename}')
-        fs = fsspec.open(file).fs
-        fs.put(file, temp_filename)
+        fs = fsspec.open(Pathy(file).parent).fs
+        fs.get(file, temp_filename)
 
         # load
         datasets_from_grib: list[xr.Dataset] = cfgrib.open_datasets(temp_filename)
