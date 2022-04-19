@@ -3,6 +3,7 @@
 This gives an easy way to download all files from an order
 """
 import logging
+import os
 import tempfile
 from typing import List, Optional
 
@@ -35,6 +36,11 @@ VARS_TO_DELETE = (
 
 class MetOfficeDataHub(BaseMetOfficeDataHub):
     """Class built on top of BaseMetOfficeDataHub used for processing multiple files"""
+
+    folder_to_download = 'temp'
+
+    if ~os.path.exists(folder_to_download):
+        os.mkdir(folder_to_download)
 
     def download_all_files(self, order_ids: Optional[List[str]] = None):
         """Download all files in the latest"""
@@ -80,8 +86,18 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
     def load_file(self, file) -> xr.Dataset:
         """Load one grib file"""
 
-        datasets_from_grib: list[xr.Dataset] = cfgrib.open_datasets(file)
+        # make tempfilename
+        filename = file.split('/')[-1]
+        temp_filename = f'{self.folder_to_download}/{filename}'
 
+        # save from s3 to local temp
+        fs = fsspec.open(file).fs
+        fs.put(file, temp_filename)
+
+        # load
+        datasets_from_grib: list[xr.Dataset] = cfgrib.open_datasets(temp_filename)
+
+        # merge
         merged_ds = xr.merge(datasets_from_grib)
 
         return merged_ds
