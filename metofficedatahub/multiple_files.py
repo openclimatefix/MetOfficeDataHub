@@ -13,7 +13,6 @@ import numcodecs
 import pandas as pd
 import s3fs
 import xarray as xr
-
 from pathy import Pathy
 
 from metofficedatahub.base import BaseMetOfficeDataHub
