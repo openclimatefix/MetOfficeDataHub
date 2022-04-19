@@ -2,6 +2,7 @@ FROM python:3.9-slim
 
 ARG TESTING=0
 
+# update
 RUN apt-get -qq update \
     && apt-get -qq install -y --no-install-recommends \
         libproj-dev \
