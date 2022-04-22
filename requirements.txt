@@ -5,7 +5,7 @@ ecmwflibs
 eccodes
 cfgrib
 xarray
-numcodecs
+numcodecs==0.10.0a2
 zarr
 fsspec
 s3fs
