@@ -6,19 +6,14 @@ ARG TESTING=0
 RUN set -ex \
     && apt-get update
 
-# Install tools
-RUN set -ex \
-    && apt-get install --yes --no-install-suggests --no-install-recommends \
-        wget \
-        git
-
 # Install build tools.
 RUN set -ex \
     && apt-get install --yes --no-install-suggests --no-install-recommends \
-      cmake \
-#      g++-8 \
-      gfortran \
+      wget \
       git \
+      cmake \
+      gfortran \
+      git
       make
 #
 # Install build-time dependencies.
