@@ -30,8 +30,6 @@ VARS_TO_DELETE = (
     "surface",
     "meanSea",
     "level",
-    "latitude",
-    "longitude",
 )
 
 

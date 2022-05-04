@@ -2,18 +2,34 @@
 import logging
 
 import numpy as np
+import pyproj
 import xarray as xr
+from scipy.interpolate import griddata
+
+# OSGB is also called "OSGB 1936 / British National Grid -- United
+# Kingdom Ordnance Survey".  OSGB is used in many UK electricity
+# system maps, and is used by the UK Met Office UKV model.  OSGB is a
+# Transverse Mercator projection, using 'easting' and 'northing'
+# coordinates which are in meters.  See https://epsg.io/27700
+OSGB = 27700
+
+# WGS84 is short for "World Geodetic System 1984", used in GPS. Uses
+# latitude and longitude.
+WGS84 = 4326
+WGS84_CRS = f"EPSG:{WGS84}"
 
 logger = logging.getLogger(__name__)
 
 DY_METERS = DX_METERS = 2_000
 
-# TODO
+# The data seems to not be exactly on a OSGB grid, therefore we are going to reproject the data
+# TODO (investigate why this is)
 # Got these from https://gridded-data-ui.cda.api.metoffice.gov.uk/select-region
-NORTH = 1262937.2520015072 - 4000
-SOUTH = -22383.68950705031 + 4000
-EAST = 704564.7522423521 - 4000
-WEST = -212346.9701878212 + 4000
+NORTH = 1262937.2520015072 - 10000
+SOUTH = -22383.68950705031 + 10000
+EAST = 704564.7522423521 - 10000
+WEST = -212346.9701878212 + 10000
+# they adjusted by 10,000 so that there are no nans when the data is reprojected to a grid
 
 NORTHING = np.arange(start=SOUTH, stop=NORTH, step=DY_METERS, dtype=np.int32)
 EASTING = np.arange(start=WEST, stop=EAST, step=DX_METERS, dtype=np.int32)
@@ -28,12 +44,64 @@ def add_x_y(dataset: xr.Dataset) -> xr.Dataset:
     see above where these values are made.
     """
 
-    return dataset.assign_coords(
-        {
-            "x": ("x", EASTING),
-            "y": ("y", NORTHING),
-        }
+    # transform to osgb
+    lat_lon_to_osgb = pyproj.Transformer.from_crs(crs_from=WGS84, crs_to=OSGB)
+    x, y = lat_lon_to_osgb.transform(dataset.latitude, dataset.longitude)
+
+    # new grid
+    x_grid, y_grid = np.meshgrid(EASTING, NORTHING)
+    points = np.array([y.ravel(), x.ravel()])
+    points = points.transpose().tolist()
+
+    # # interpolate lat lon, could take about 6 seconds
+    logger.debug("Resampling lat and lon values")
+    lat = griddata(
+        points=points, values=dataset.latitude.values.ravel(), xi=(y_grid, x_grid), method="linear"
     )
+    lon = griddata(
+        points=points, values=dataset.longitude.values.ravel(), xi=(y_grid, x_grid), method="linear"
+    )
+
+    data_vars = list(dataset.data_vars)
+    data_vars_all = {}
+    for data_var in data_vars:
+        logger.debug(f"Resampling {data_var}")
+
+        data = dataset.__getitem__(data_var)
+
+        n1, n2, ny, nx = data.shape
+        data_gird = np.zeros((n1, n2, NUM_ROWS, NUM_COLS))
+
+        # need to loop of 'init_time' and 'step'
+        for i in range(n1):
+            for j in range(n2):
+                values = dataset.dswrf[i, j].values.ravel()
+                # The following different methods can be used. Then timings are for a (639, 455) image
+                # nearest - 0.4 seconds
+                # linear - 2.9 seconds
+                # cubic - 3.3 seconds
+                tt = griddata(points=points, values=values, xi=(y_grid, x_grid), method="nearest")
+                data_gird[i, j] = tt
+
+        data_vars_all[data_var] = xr.DataArray(
+            {"dims": ["time", "step", "y", "x"], "data": data_gird, "attrs": data.attrs}
+        )
+
+    # create new dataset
+    new_dataset = xr.Dataset(
+        data_vars=data_vars_all,
+        coords={
+            "time": dataset.time,
+            "step": dataset.step,
+            "y": ("y", NORTHING),
+            "x": ("x", EASTING),
+            "latitude": (["y", "x"], lat, dataset.latitude.attrs),
+            "longitude": (["y", "x"], lon, dataset.longitude.attrs),
+        },
+        attrs=dataset.attrs,
+    )
+
+    return new_dataset
 
 
 def post_process_dataset(dataset: xr.Dataset) -> xr.Dataset:
