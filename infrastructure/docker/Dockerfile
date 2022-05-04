@@ -1,4 +1,4 @@
-FROM python:3.9-slim
+FROM python:3.10-slim
 
 ARG TESTING=0
 
@@ -53,6 +53,15 @@ RUN set -eux \
     && make install \
     && /sbin/ldconfig
 
+
+RUN apt-get remove --yes wget \
+      git \
+      cmake \
+      gfortran \
+      git \
+      make
+RUN apt-get clean
+RUN apt-get autoremove --yes
 
 # copy files
 COPY setup.py app/setup.py
