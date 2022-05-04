@@ -76,10 +76,11 @@ def add_x_y(dataset: xr.Dataset) -> xr.Dataset:
         for i in range(n1):
             for j in range(n2):
                 values = dataset.dswrf[i, j].values.ravel()
-                # The following different methods can be used. Then timings are for a (639, 455) image
+                # The following different methods can be used.
                 # nearest - 0.4 seconds
                 # linear - 2.9 seconds
                 # cubic - 3.3 seconds
+                # The timings are for a (639, 455) image
                 tt = griddata(points=points, values=values, xi=(y_grid, x_grid), method="nearest")
                 data_gird[i, j] = tt
 
