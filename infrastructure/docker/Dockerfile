@@ -7,7 +7,7 @@ RUN apt-get -qq update \
     && apt-get -qq install -y --no-install-recommends \
         libproj-dev \
         libgeos-dev \
-        libeccodes-tools \
+        libeccodes-dev \
     && apt-get autoclean && apt-get autoremove \
     > /dev/null
 
