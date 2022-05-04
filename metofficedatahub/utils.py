@@ -84,7 +84,7 @@ def add_x_y(dataset: xr.Dataset) -> xr.Dataset:
                 data_gird[i, j] = tt
 
         data_vars_all[data_var] = xr.DataArray(
-            {"dims": ["time", "step", "y", "x"], "data": data_gird, "attrs": data.attrs}
+            **{"dims": ["time", "step", "y", "x"], "data": data_gird, "attrs": data.attrs}
         )
 
     # create new dataset
