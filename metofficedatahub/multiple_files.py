@@ -69,7 +69,7 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
 
                 variable = file.fileId
                 datetime = variable.split("_")[-1]
-                logger.debug(f'Date time of file is {datetime}')
+                logger.debug(f"Date time of file is {datetime}")
 
                 # There seem to be two files that are the same,
                 # one with '+HH' and one with 'YYYYMMDDHH'
@@ -84,7 +84,7 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
                     file.local_filename = filename
                     self.files.append(file)
                 else:
-                    logger.debug(f'Not adding {file_id} to list')
+                    logger.debug(f"Not adding {file_id} to list")
 
         logger.info(f"All files downloaded ({len(self.files)}")
 
