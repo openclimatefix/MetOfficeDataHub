@@ -13,7 +13,7 @@ RUN set -ex \
       git \
       cmake \
       gfortran \
-      git
+      git \
       make
 #
 # Install build-time dependencies.
