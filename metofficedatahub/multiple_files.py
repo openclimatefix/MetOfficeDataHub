@@ -150,7 +150,6 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
                 logger.debug(
                     f"Not including file as the data is < {filter_time}, {file.local_filename}"
                 )
-                break
             else:
                 if variable not in all_datasets_per_filename.keys():
                     all_datasets_per_filename[variable] = [dataset]
