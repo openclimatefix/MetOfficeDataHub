@@ -34,6 +34,10 @@ VARS_TO_DELETE = (
     "level",
 )
 
+variable_name_translation = {
+    "temperature": {"t2m": "t"},
+}
+
 HOUR_IN_PAST = 7
 
 
@@ -104,9 +108,12 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
         temp_filename = f"{self.folder_to_download}/{filename}"
 
         # save from s3 to local temp
-        logger.debug(f"Moving {file} to {temp_filename}")
-        fs = fsspec.open(Pathy(file).parent).fs
-        fs.get(file, temp_filename)
+        if ~os.path.exists(Pathy(temp_filename)):
+            logger.debug(f"Moving {file} to {temp_filename}")
+            fs = fsspec.open(Pathy(file).parent).fs
+            fs.get(file, temp_filename)
+        else:
+            logger.debug(f"Already in local file, {temp_filename}")
 
         # load
         datasets_from_grib: list[xr.Dataset] = cfgrib.open_datasets(temp_filename)
@@ -158,9 +165,6 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
 
                 del dataset
 
-        # filter time
-        filter_time = datetime.now(timezone.utc) - timedelta(hours=6)
-
         # loop over different variables and join them together
         logger.info("Joining the dataset together")
         all_dataset = []
@@ -178,14 +182,27 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
             # add time as dimension
             v = [vv.expand_dims("time") for vv in v]
 
+            # merge dataset
+            dataset = xr.merge(v)
+
+            if k in variable_name_translation:
+
+                rename = variable_name_translation[k]
+                for key in rename.keys():
+                    if key in dataset.data_vars:
+                        logger.debug(f"Renaming {rename}")
+                        dataset = dataset.rename(variable_name_translation[k])
+                    else:
+                        logger.debug(f"Key ({key}) not in data vars")
+
             # join all variables together
-            all_dataset.append(xr.merge(v))
+            all_dataset.append(dataset)
 
             # save memory
             del v
 
         dataset = xr.merge(all_dataset)
-        logger.debug("Loaded all files")
+        logger.debug(f"Loaded all files, {dataset.data_vars}")
 
         dataset = add_x_y(dataset)
         dataset = post_process_dataset(dataset)
