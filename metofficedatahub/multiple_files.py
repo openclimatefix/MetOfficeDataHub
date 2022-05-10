@@ -11,6 +11,7 @@ import cfgrib
 import fsspec
 import numcodecs
 import pandas as pd
+import psutil
 import s3fs
 import xarray as xr
 from pathy import Pathy
@@ -64,7 +65,9 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
             logger.debug(f"There are {len(self.order_details.files)} files to load")
 
             # loop over all files
-            for file in self.order_details.files:
+            for i, file in enumerate(self.order_details.files):
+                logger.debug(f"Downloading file {i} out of {len(self.order_details.files)}")
+
                 file_id = file.fileId
 
                 variable = file.fileId
@@ -147,16 +150,18 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
 
             v = all_datasets_per_filename.pop(k)
 
+            # print memoery
+            process = psutil.Process(os.getpid())
+            logger.debug(f"Memoery is {process.memory_info().rss / 10**6} MB")
+
             # add time as dimension
             v = [vv.expand_dims("time") for vv in v]
 
             # join all variables together
-            dataset = xr.merge(v)
-
-            all_dataset.append(dataset)
+            all_dataset.append(xr.merge(v))
 
             # save memory
-            del dataset
+            del v
 
         dataset = xr.merge(all_dataset)
         logger.debug("Loaded all files")
