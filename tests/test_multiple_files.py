@@ -2,6 +2,7 @@ import os
 import tempfile
 from datetime import datetime
 from unittest import mock
+from freezegun import freeze_time
 
 import xarray as xr
 
@@ -54,6 +55,7 @@ def test_download_repeat(mock_get, metofficedatahub):
             assert datetime.fromtimestamp(creation_time) < datetime_now
 
 
+@freeze_time("2022-01-01")
 @mock.patch("requests.get", side_effect=mocked_requests_get)
 def test_load_all_files(mock_get, metofficedatahub):
 
@@ -66,6 +68,7 @@ def test_load_all_files(mock_get, metofficedatahub):
         assert len(data.data_vars) > 0
 
 
+@freeze_time("2022-01-01")
 @mock.patch("requests.get", side_effect=mocked_requests_get)
 def test_save_to_zarr(mock_get, metofficedatahub):
 
@@ -81,6 +84,7 @@ def test_save_to_zarr(mock_get, metofficedatahub):
             assert os.path.exists(f"{tmpdirname}/latest.zarr")
 
 
+@freeze_time("2022-01-01")
 @mock.patch("requests.get", side_effect=mocked_requests_get)
 def test_save_to_netcdf(mock_get, metofficedatahub):
 
