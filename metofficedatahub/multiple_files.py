@@ -35,7 +35,7 @@ VARS_TO_DELETE = (
 )
 
 variable_name_translation = {
-    'temperature': {'t2m':'t'},
+    "temperature": {"t2m": "t"},
 }
 
 HOUR_IN_PAST = 7
@@ -113,7 +113,7 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
             fs = fsspec.open(Pathy(file).parent).fs
             fs.get(file, temp_filename)
         else:
-            logger.debug(f'Already in local file, {temp_filename}')
+            logger.debug(f"Already in local file, {temp_filename}")
 
         # load
         datasets_from_grib: list[xr.Dataset] = cfgrib.open_datasets(temp_filename)
@@ -186,7 +186,7 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
             dataset = xr.merge(v)
 
             if k in variable_name_translation:
-                logger.debug(f'Renaming {variable_name_translation[k]}')
+                logger.debug(f"Renaming {variable_name_translation[k]}")
                 dataset = dataset.rename(variable_name_translation[k])
 
             # join all variables together
