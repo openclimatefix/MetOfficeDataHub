@@ -156,7 +156,7 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
                     all_datasets_per_filename[variable] = [dataset]
                 else:
                     all_datasets_per_filename[variable].append(dataset)
-    
+
                 del dataset
 
         # filter time
