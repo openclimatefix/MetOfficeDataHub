@@ -36,6 +36,7 @@ VARS_TO_DELETE = (
 
 variable_name_translation = {
     "temperature": {"t2m": "t"},
+    "wind-speed-surface-adjusted": {"unknown": "si10"},
 }
 
 HOUR_IN_PAST = 7
@@ -44,7 +45,7 @@ HOUR_IN_PAST = 7
 class MetOfficeDataHub(BaseMetOfficeDataHub):
     """Class built on top of BaseMetOfficeDataHub used for processing multiple files"""
 
-    folder_to_download = "temp"
+    folder_to_download = "./temp"
 
     if ~os.path.exists(folder_to_download):
         try:
@@ -144,6 +145,17 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
             # filter time
             filter_time = datetime.now(timezone.utc) - timedelta(hours=HOUR_IN_PAST)
 
+            # rename variables
+            if variable in variable_name_translation:
+
+                rename = variable_name_translation[variable]
+                for key in rename.keys():
+                    if key in dataset.data_vars:
+                        logger.debug(f"Renaming {rename}")
+                        dataset = dataset.rename(variable_name_translation[variable])
+                    else:
+                        logger.debug(f"Key ({key}) not in data vars")
+
             # remove un-needed variables
             for var in VARS_TO_DELETE:
 
@@ -184,16 +196,6 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
 
             # merge dataset
             dataset = xr.merge(v)
-
-            if k in variable_name_translation:
-
-                rename = variable_name_translation[k]
-                for key in rename.keys():
-                    if key in dataset.data_vars:
-                        logger.debug(f"Renaming {rename}")
-                        dataset = dataset.rename(variable_name_translation[k])
-                    else:
-                        logger.debug(f"Key ({key}) not in data vars")
 
             # join all variables together
             all_dataset.append(dataset)
