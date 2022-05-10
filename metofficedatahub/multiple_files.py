@@ -111,6 +111,8 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
         # merge
         merged_ds = xr.merge(datasets_from_grib)
 
+        del datasets_from_grib
+
         return merged_ds
 
     def load_all_files(self) -> xr.Dataset:
@@ -140,6 +142,8 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
             else:
                 all_datasets_per_filename[variable].append(dataset)
 
+            del dataset
+
         # loop over different variables and join them together
         logger.debug("Joining the dataset together")
         all_dataset = []
@@ -152,7 +156,7 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
 
             # print memoery
             process = psutil.Process(os.getpid())
-            logger.debug(f"Memoery is {process.memory_info().rss / 10**6} MB")
+            logger.debug(f"Memory is {process.memory_info().rss / 10**6} MB")
 
             # add time as dimension
             v = [vv.expand_dims("time") for vv in v]
