@@ -2,9 +2,9 @@ import os
 import tempfile
 from datetime import datetime
 from unittest import mock
-from freezegun import freeze_time
 
 import xarray as xr
+from freezegun import freeze_time
 
 from metofficedatahub.multiple_files import save
 from tests.conftest import mocked_requests_get

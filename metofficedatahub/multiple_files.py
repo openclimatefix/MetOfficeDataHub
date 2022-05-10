@@ -5,8 +5,8 @@ This gives an easy way to download all files from an order
 import logging
 import os
 import tempfile
-from typing import List, Optional
 from datetime import datetime, timedelta, timezone
+from typing import List, Optional
 
 import cfgrib
 import fsspec
@@ -147,14 +147,16 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
             time = time.replace(tzinfo=timezone.utc)
             logger.debug(f"Data is for {time}, {filter_time=}")
             if time < filter_time:
-                logger.debug(f'Not including file as the data is < {filter_time}, {file.local_filename}')
+                logger.debug(
+                    f"Not including file as the data is < {filter_time}, {file.local_filename}"
+                )
                 break
 
             if variable not in all_datasets_per_filename.keys():
                 all_datasets_per_filename[variable] = [dataset]
             else:
                 all_datasets_per_filename[variable].append(dataset)
-            
+
             logger.info(dataset)
 
             del dataset
