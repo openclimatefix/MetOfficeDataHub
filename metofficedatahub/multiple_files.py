@@ -151,15 +151,13 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
                     f"Not including file as the data is < {filter_time}, {file.local_filename}"
                 )
                 break
-
-            if variable not in all_datasets_per_filename.keys():
-                all_datasets_per_filename[variable] = [dataset]
             else:
-                all_datasets_per_filename[variable].append(dataset)
-
-            logger.info(dataset)
-
-            del dataset
+                if variable not in all_datasets_per_filename.keys():
+                    all_datasets_per_filename[variable] = [dataset]
+                else:
+                    all_datasets_per_filename[variable].append(dataset)
+    
+                del dataset
 
         # filter time
         filter_time = datetime.now(timezone.utc) - timedelta(hours=6)
