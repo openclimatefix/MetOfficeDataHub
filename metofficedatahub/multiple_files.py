@@ -6,6 +6,7 @@ import logging
 import os
 import tempfile
 from typing import List, Optional
+from datetime import datetime, timedelta, timezone
 
 import cfgrib
 import fsspec
@@ -32,6 +33,8 @@ VARS_TO_DELETE = (
     "meanSea",
     "level",
 )
+
+HOUR_IN_PAST = 7
 
 
 class MetOfficeDataHub(BaseMetOfficeDataHub):
@@ -131,21 +134,36 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
 
             dataset = self.load_file(file=file.local_filename)
 
+            # filter time
+            filter_time = datetime.now(timezone.utc) - timedelta(hours=HOUR_IN_PAST)
+
             # remove un-needed variables
             for var in VARS_TO_DELETE:
 
                 if var in dataset.variables:
                     del dataset[var]
 
+            time = pd.to_datetime(dataset.time.values)
+            time = time.replace(tzinfo=timezone.utc)
+            logger.debug(f"Data is for {time}, {filter_time=}")
+            if time < filter_time:
+                logger.debug(f'Not including file as the data is < {filter_time}, {file.local_filename}')
+                break
+
             if variable not in all_datasets_per_filename.keys():
                 all_datasets_per_filename[variable] = [dataset]
             else:
                 all_datasets_per_filename[variable].append(dataset)
+            
+            logger.info(dataset)
 
             del dataset
 
+        # filter time
+        filter_time = datetime.now(timezone.utc) - timedelta(hours=6)
+
         # loop over different variables and join them together
-        logger.debug("Joining the dataset together")
+        logger.info("Joining the dataset together")
         all_dataset = []
         keys = list(all_datasets_per_filename.keys())
         for k in keys:

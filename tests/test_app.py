@@ -1,5 +1,6 @@
 import tempfile
 from unittest import mock
+from freezegun import freeze_time
 
 import xarray as xr
 from click.testing import CliRunner
@@ -9,7 +10,7 @@ from tests.conftest import mocked_requests_get, mocked_requests_get_error
 
 runner = CliRunner()
 
-
+@freeze_time("2022-01-01")
 @mock.patch("requests.get", side_effect=mocked_requests_get)
 def test_save_to_zarr(mock_get, db_connection):
 
@@ -20,6 +21,7 @@ def test_save_to_zarr(mock_get, db_connection):
         assert response.exit_code == 0
 
 
+@freeze_time("2022-01-01")
 @mock.patch("requests.get", side_effect=mocked_requests_get_error)
 def test_error(mock_get, db_connection):
 
