@@ -190,11 +190,10 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
                 rename = variable_name_translation[k]
                 for key in rename.keys():
                     if key in dataset.data_vars:
-                        logger.debug(f'Renaming {rename}')
+                        logger.debug(f"Renaming {rename}")
                         dataset = dataset.rename(variable_name_translation[k])
                     else:
-                        logger.debug(f'Key ({key}) not in data vars')
-
+                        logger.debug(f"Key ({key}) not in data vars")
 
             # join all variables together
             all_dataset.append(dataset)
