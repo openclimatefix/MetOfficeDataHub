@@ -64,7 +64,9 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
             logger.debug(f"There are {len(self.order_details.files)} files to load")
 
             # loop over all files
-            for file in self.order_details.files:
+            for i, file in enumerate(self.order_details.files):
+                logger.debug(f"Downloading file {i} out of {len(self.order_details.files)}")
+
                 file_id = file.fileId
 
                 variable = file.fileId
