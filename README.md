@@ -62,7 +62,6 @@ You can pull the production docker image from docker hub using
 docker pull openclimatefix/metoffice_weather_datahub
 ```
 
-
 ### local
 You can also build your own docker image locally using
 ```bash
