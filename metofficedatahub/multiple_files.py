@@ -4,6 +4,7 @@ This gives an easy way to download all files from an order
 """
 import logging
 import os
+import psutil
 import tempfile
 from typing import List, Optional
 
