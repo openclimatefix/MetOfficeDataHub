@@ -148,17 +148,19 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
             logger.debug(f"Merging dataset {k} out of {len(keys)}")
 
             v = all_datasets_per_filename.pop(k)
+            
+            # print memoery
+            process = psutil.Process(os.getpid())
+            logger.debug(f'Memoery is {process.memory_info().rss / 10^6} MB') 
 
             # add time as dimension
             v = [vv.expand_dims("time") for vv in v]
 
             # join all variables together
-            dataset = xr.merge(v)
-
-            all_dataset.append(dataset)
+            all_dataset.append(xr.merge(v))
 
             # save memory
-            del dataset
+            del v
 
         dataset = xr.merge(all_dataset)
         logger.debug("Loaded all files")
