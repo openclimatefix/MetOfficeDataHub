@@ -186,8 +186,13 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
             dataset = xr.merge(v)
 
             if k in variable_name_translation:
-                logger.debug(f'Renaming {variable_name_translation[k]}')
-                dataset = dataset.rename(variable_name_translation[k])
+                rename = variable_name_translation[k]
+                for key in rename.keys():
+                    if key in dataset.data_vars:
+                        logger.debug(f'Renaming {rename}')
+                        dataset = dataset.rename(variable_name_translation[k])
+                    else:
+                        logger.debug('Key ({key}) not in data vars')
 
             # join all variables together
             all_dataset.append(dataset)
