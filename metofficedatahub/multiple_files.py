@@ -148,10 +148,10 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
             logger.debug(f"Merging dataset {k} out of {len(keys)}")
 
             v = all_datasets_per_filename.pop(k)
-            
+
             # print memoery
             process = psutil.Process(os.getpid())
-            logger.debug(f'Memoery is {process.memory_info().rss / 10^6} MB') 
+            logger.debug(f"Memoery is {process.memory_info().rss / 10^6} MB")
 
             # add time as dimension
             v = [vv.expand_dims("time") for vv in v]
