@@ -98,15 +98,16 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
 
         # make tempfilename
         filename = file.split("/")[-1]
-        temp_filename = f"{self.folder_to_download}/{filename}"
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            temp_filename = f"{tmp_dir.name}/{filename}"
 
-        # save from s3 to local temp
-        logger.debug(f"Moving {file} to {temp_filename}")
-        fs = fsspec.open(Pathy(file).parent).fs
-        fs.get(file, temp_filename)
+            # save from s3 to local temp
+            logger.debug(f"Moving {file} to {temp_filename}")
+            fs = fsspec.open(Pathy(file).parent).fs
+            fs.get(file, temp_filename)
 
-        # load
-        datasets_from_grib: list[xr.Dataset] = cfgrib.open_datasets(temp_filename)
+            # load
+            datasets_from_grib: list[xr.Dataset] = cfgrib.open_datasets(temp_filename)
 
         # merge
         merged_ds = xr.merge(datasets_from_grib)
@@ -139,6 +140,8 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
                 all_datasets_per_filename[variable] = [dataset]
             else:
                 all_datasets_per_filename[variable].append(dataset)
+
+            del dataset
 
         # loop over different variables and join them together
         logger.debug("Joining the dataset together")
