@@ -99,7 +99,7 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
         # make tempfilename
         filename = file.split("/")[-1]
         with tempfile.TemporaryDirectory() as tmp_dir:
-            temp_filename = f"{tmp_dir.name}/{filename}"
+            temp_filename = f"{tmp_dir}/{filename}"
 
             # save from s3 to local temp
             logger.debug(f"Moving {file} to {temp_filename}")
