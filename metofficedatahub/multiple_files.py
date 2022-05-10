@@ -98,19 +98,20 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
 
         # make tempfilename
         filename = file.split("/")[-1]
-        with tempfile.TemporaryDirectory() as tmp_dir:
-            temp_filename = f"{tmp_dir}/{filename}"
+        temp_filename = f"{self.folder_to_download}/{filename}"
 
-            # save from s3 to local temp
-            logger.debug(f"Moving {file} to {temp_filename}")
-            fs = fsspec.open(Pathy(file).parent).fs
-            fs.get(file, temp_filename)
+        # save from s3 to local temp
+        logger.debug(f"Moving {file} to {temp_filename}")
+        fs = fsspec.open(Pathy(file).parent).fs
+        fs.get(file, temp_filename)
 
-            # load
-            datasets_from_grib: list[xr.Dataset] = cfgrib.open_datasets(temp_filename)
+        # load
+        datasets_from_grib: list[xr.Dataset] = cfgrib.open_datasets(temp_filename)
 
         # merge
         merged_ds = xr.merge(datasets_from_grib)
+
+        del datasets_from_grib
 
         return merged_ds
 
@@ -155,7 +156,7 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
 
             # print memoery
             process = psutil.Process(os.getpid())
-            logger.debug(f"Memoery is {process.memory_info().rss / 10**6} MB")
+            logger.debug(f"Memory is {process.memory_info().rss / 10**6} MB")
 
             # add time as dimension
             v = [vv.expand_dims("time") for vv in v]
