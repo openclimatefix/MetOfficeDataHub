@@ -7,6 +7,7 @@ import os
 import tempfile
 from datetime import datetime, timedelta, timezone
 from typing import List, Optional
+from uuid import uuid4
 
 import cfgrib
 import fsspec
@@ -16,7 +17,6 @@ import psutil
 import s3fs
 import xarray as xr
 from pathy import Pathy
-from uuid import uuid4
 
 from metofficedatahub.base import BaseMetOfficeDataHub
 from metofficedatahub.utils import add_x_y, post_process_dataset
@@ -283,7 +283,9 @@ def save(dataset: xr.Dataset, save_dir: str, save_latest: bool = True, output_ty
     # option to save latest or not
     if save_latest:
         logger.debug(f"Saving latest file {filename_and_path_latest}")
-        save_to_s3(dataset=dataset, filename_and_path=filename_and_path_latest, output_type=output_type)
+        save_to_s3(
+            dataset=dataset, filename_and_path=filename_and_path_latest, output_type=output_type
+        )
 
     # save historic data
     logger.debug(f"Saving file {filename_and_path}")
@@ -291,12 +293,13 @@ def save(dataset: xr.Dataset, save_dir: str, save_latest: bool = True, output_ty
 
 
 def save_to_s3(dataset: xr.Dataset, filename_and_path: str, output_type):
-    """ Save to s3"""
+    """Save to s3"""
 
     if output_type == "zarr":
         # encoding used when saving to zarr file
         encoding = {
-            var: {"compressor": numcodecs.Blosc(cname="zstd", clevel=5)} for var in dataset.data_vars
+            var: {"compressor": numcodecs.Blosc(cname="zstd", clevel=5)}
+            for var in dataset.data_vars
         }
 
         dataset.to_zarr(store=filename_and_path, mode="w", encoding=encoding, consolidated=True)
@@ -320,7 +323,7 @@ def save_to_netcdf_to_s3(dataset: xr.Dataset, filename: str):
         dataset.to_netcdf(path=path, mode="w", engine="h5netcdf")
 
         # 2. save to s3
-        filename_temp = str(Pathy(filename).parent.joinpath(str(uuid4()) + '.netcdf'))
+        filename_temp = str(Pathy(filename).parent.joinpath(str(uuid4()) + ".netcdf"))
         filesystem = fsspec.open(filename_temp).fs
         filesystem.put(path, filename_temp)
 
