@@ -309,7 +309,7 @@ def save_to_netcdf_to_s3(dataset: xr.Dataset, filename: str):
 
     1. Save in temp local dir
     2. upload to s3 to temp name
-    3. save over current file, and remove temp file
+    3. remove file and then rename
 
     :param dataset: The Xarray Dataset to be save
     :param filename: The s3 filname
@@ -324,7 +324,6 @@ def save_to_netcdf_to_s3(dataset: xr.Dataset, filename: str):
         filesystem = fsspec.open(filename_temp).fs
         filesystem.put(path, filename_temp)
 
-        # 3. rename and save over
-        filesystem.copy(filename_temp, filename, overwrite=True)
-        filesystem.rm(filename_temp)
-
+        # 3. remove and rename over
+        filesystem.rm(filename)
+        filesystem.mv(filename_temp, filename)
