@@ -75,7 +75,7 @@ def add_x_y(dataset: xr.Dataset) -> xr.Dataset:
         # need to loop of 'init_time' and 'step'
         for i in range(n1):
             for j in range(n2):
-                values = dataset.dswrf[i, j].values.ravel()
+                values = data[i, j].values.ravel()
                 # The following different methods can be used.
                 # nearest - 0.4 seconds
                 # linear - 2.9 seconds
