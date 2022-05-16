@@ -325,5 +325,4 @@ def save_to_netcdf_to_s3(dataset: xr.Dataset, filename: str):
         filesystem.put(path, filename_temp)
 
         # 3. remove and rename over
-        filesystem.rm(filename)
         filesystem.mv(filename_temp, filename)
