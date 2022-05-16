@@ -16,6 +16,7 @@ import psutil
 import s3fs
 import xarray as xr
 from pathy import Pathy
+from uuid import uuid4
 
 from metofficedatahub.base import BaseMetOfficeDataHub
 from metofficedatahub.utils import add_x_y, post_process_dataset
@@ -279,25 +280,25 @@ def save(dataset: xr.Dataset, save_dir: str, save_latest: bool = True, output_ty
         dataset=dataset, save_dir=save_dir, output_type=output_type
     )
 
-    # encoding used when saving to zarr file
-    encoding = {
-        var: {"compressor": numcodecs.Blosc(cname="zstd", clevel=5)} for var in dataset.data_vars
-    }
-
     # option to save latest or not
     if save_latest:
         logger.debug(f"Saving latest file {filename_and_path_latest}")
-
-        if output_type == "zarr":
-            dataset.to_zarr(
-                store=filename_and_path_latest, mode="w", encoding=encoding, consolidated=True
-            )
-        else:
-            save_to_netcdf_to_s3(dataset=dataset, filename=filename_and_path_latest)
+        save_to_s3(dataset=dataset, filename_and_path=filename_and_path_latest, output_type=output_type)
 
     # save historic data
     logger.debug(f"Saving file {filename_and_path}")
+    save_to_s3(dataset=dataset, filename_and_path=filename_and_path_latest, output_type=output_type)
+
+
+def save_to_s3(dataset: xr.Dataset, filename_and_path: str, output_type):
+    """ Save to s3"""
+
     if output_type == "zarr":
+        # encoding used when saving to zarr file
+        encoding = {
+            var: {"compressor": numcodecs.Blosc(cname="zstd", clevel=5)} for var in dataset.data_vars
+        }
+
         dataset.to_zarr(store=filename_and_path, mode="w", encoding=encoding, consolidated=True)
     else:
         save_to_netcdf_to_s3(dataset=dataset, filename=filename_and_path)
@@ -307,16 +308,23 @@ def save_to_netcdf_to_s3(dataset: xr.Dataset, filename: str):
     """Save xarray to netcdf in s3
 
     1. Save in temp local dir
-    2. upload to s3
+    2. upload to s3 to temp name
+    3. save over current file, and remove temp file
 
     :param dataset: The Xarray Dataset to be save
     :param filename: The s3 filname
     """
     with tempfile.TemporaryDirectory() as dir:
-        # save locally
+        # 1. save locally
         path = f"{dir}/temp.netcdf"
         dataset.to_netcdf(path=path, mode="w", engine="h5netcdf")
 
-        # save to s3
-        filesystem = fsspec.open(filename).fs
-        filesystem.put(path, filename)
+        # 2. save to s3
+        filename_temp = str(Pathy(filename).parent.joinpath(str(uuid4()) + '.netcdf'))
+        filesystem = fsspec.open(filename_temp).fs
+        filesystem.put(path, filename_temp)
+
+        # 3. rename and save over
+        filesystem.copy(filename_temp, filename, overwrite=True)
+        filesystem.rm(filename_temp)
+
