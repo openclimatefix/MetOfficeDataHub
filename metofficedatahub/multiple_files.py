@@ -206,6 +206,8 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
 
         dataset = xr.merge(all_dataset)
         logger.debug(f"Loaded all files, {dataset.data_vars}")
+        logger.debug(f"{dataset.time=}")
+        logger.debug(f"{dataset.step=}")
 
         dataset = add_x_y(dataset)
         dataset = post_process_dataset(dataset)
