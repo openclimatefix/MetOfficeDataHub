@@ -206,6 +206,8 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
 
         dataset = xr.merge(all_dataset)
         logger.debug(f"Loaded all files, {dataset.data_vars}")
+        logger.debug(f"{dataset.time=}")
+        logger.debug(f"{dataset.step=}")
 
         dataset = add_x_y(dataset)
         dataset = post_process_dataset(dataset)
@@ -289,7 +291,7 @@ def save(dataset: xr.Dataset, save_dir: str, save_latest: bool = True, output_ty
 
     # save historic data
     logger.debug(f"Saving file {filename_and_path}")
-    save_to_s3(dataset=dataset, filename_and_path=filename_and_path_latest, output_type=output_type)
+    save_to_s3(dataset=dataset, filename_and_path=filename_and_path, output_type=output_type)
 
 
 def save_to_s3(dataset: xr.Dataset, filename_and_path: str, output_type):
