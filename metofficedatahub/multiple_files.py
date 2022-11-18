@@ -38,7 +38,7 @@ VARS_TO_DELETE = (
 variable_name_translation = {
     "temperature": {"t2m": "t"},
     "wind-speed-surface-adjusted": {"unknown": "si10"},
-    "ground_rain-precipitation-rate": {"rprate": "prate"},
+    "rain-precipitation-rate": {"rprate": "prate"},
 }
 
 HOUR_IN_PAST = 7
