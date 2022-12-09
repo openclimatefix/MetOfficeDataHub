@@ -12,18 +12,18 @@ from tests.conftest import mocked_requests_get
 
 @mock.patch("requests.get", side_effect=mocked_requests_get)
 def test_download_all_none(mock_get, metofficedatahub):
-    """Check that if there are no order ids, then no data is downloaded"""
+    """Check that if there are no order ids, then all data is downloaded"""
     with tempfile.TemporaryDirectory() as tmpdirname:
         metofficedatahub.cache_dir = tmpdirname
 
         metofficedatahub.download_all_files(order_ids=[])
 
-        assert len(metofficedatahub.files) == 0
+        assert len(metofficedatahub.files) == 1
 
 
 @mock.patch("requests.get", side_effect=mocked_requests_get)
 def test_download_all(mock_get, metofficedatahub):
-    """Check that if there are order ids, then  data is downloaded"""
+    """Check that if there are order ids, then their data is downloaded"""
     with tempfile.TemporaryDirectory() as tmpdirname:
         metofficedatahub.cache_dir = tmpdirname
         metofficedatahub.download_all_files(order_ids=["test_order_id"])
@@ -58,7 +58,6 @@ def test_download_repeat(mock_get, metofficedatahub):
 @freeze_time("2022-01-01")
 @mock.patch("requests.get", side_effect=mocked_requests_get)
 def test_load_all_files(mock_get, metofficedatahub):
-
     with tempfile.TemporaryDirectory() as tmpdirname:
         metofficedatahub.cache_dir = tmpdirname
 
@@ -71,7 +70,6 @@ def test_load_all_files(mock_get, metofficedatahub):
 @freeze_time("2022-01-01")
 @mock.patch("requests.get", side_effect=mocked_requests_get)
 def test_save_to_zarr(mock_get, metofficedatahub):
-
     with tempfile.TemporaryDirectory() as tmpdirname:
         metofficedatahub.cache_dir = tmpdirname
 
@@ -87,7 +85,6 @@ def test_save_to_zarr(mock_get, metofficedatahub):
 @freeze_time("2022-01-01")
 @mock.patch("requests.get", side_effect=mocked_requests_get)
 def test_save_to_netcdf(mock_get, metofficedatahub):
-
     with tempfile.TemporaryDirectory() as tmpdirname:
         metofficedatahub.cache_dir = tmpdirname
 

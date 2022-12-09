@@ -1,6 +1,7 @@
 """ Application that pulls data from the Metoffice API and saves to a zarr file"""
 import logging
 import os
+import sys
 from typing import Optional
 
 import click
@@ -48,7 +49,22 @@ logger.setLevel(getattr(logging, os.environ.get("LOG_LEVEL", "INFO")))
     help="Database to save when this has run",
     type=click.STRING,
 )
-def run(api_key, api_secret, save_dir, db_url: Optional[str] = None):
+@click.option(
+    "--order-ids",
+    default=None,
+    envvar="ORDER_IDS",
+    help="Order IDs from which to pull latest files. Call flag multiple times to pass multiple IDs, or space-separate "
+    "them in the environment variable. Pulls files from all orders if not provided.",
+    multiple=True,
+    type=click.STRING,
+)
+def run(
+    api_key,
+    api_secret,
+    save_dir,
+    db_url: Optional[str] = None,
+    order_ids: Optional[list[str]] = None,
+):
     """Run main application
 
     1. Get data from API, download grip files
@@ -60,7 +76,7 @@ def run(api_key, api_secret, save_dir, db_url: Optional[str] = None):
     logger.info(f'Running application and saving to "{save_dir}"')
     # 1. Get data from API, download grip files
     datahub = MetOfficeDataHub(client_id=api_key, client_secret=api_secret)
-    datahub.download_all_files()
+    datahub.download_all_files(order_ids=order_ids)
 
     # 2. Load grib files to one Xarray Dataset
     data = datahub.load_all_files()

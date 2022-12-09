@@ -55,17 +55,35 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
         except Exception as e:
             logger.debug(f"Could not make folder {folder_to_download} - {e}")
 
-    def download_all_files(self, order_ids: Optional[List[str]] = None):
-        """Download all files in the latest"""
+    def __init__(
+        self,
+        cache_dir: str = os.getenv("RAW_DIR", "./temp_metofficedatahub"),
+        client_id: str = None,
+        client_secret: str = None,
+    ):
+        """
+        Initialise the class
 
-        logger.info("Downloading all files")
+        :param cache_dir: The directory where files are downloaded to
+        :param client_id: the client id for the api
+        :param client_secret: the client secret for the api
+        """
+        super().__init__(cache_dir, client_id, client_secret)
+        self.files = []
 
-        if order_ids is None:
+    def download_all_files(self, order_ids: List[str]):
+        """Download all latest files for specified orders.
+
+        If no orders are specified, download latest files
+        for all orders.
+        """
+
+        if len(order_ids) is 0:
+            logger.info("Downloading all files")
             all_orders = self.get_orders()
             order_ids = [order.orderId for order in all_orders.orders]
 
         # loop over orders
-        self.files = []
         for order_id in order_ids:
 
             logger.debug(f"Loading files from order {order_id}")
@@ -184,14 +202,13 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
         all_dataset = []
         keys = list(all_datasets_per_filename.keys())
         for k in keys:
-
             logger.debug(f"Merging dataset {k} out of {len(keys)}")
 
             v = all_datasets_per_filename.pop(k)
 
             # print memoery
             process = psutil.Process(os.getpid())
-            logger.debug(f"Memory is {process.memory_info().rss / 10**6} MB")
+            logger.debug(f"Memory is {process.memory_info().rss / 10 ** 6} MB")
 
             # add time as dimension
             v = [vv.expand_dims("time") for vv in v]
