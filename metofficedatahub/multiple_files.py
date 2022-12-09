@@ -113,7 +113,7 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
         # save from s3 to local temp
         if ~os.path.exists(Pathy(temp_filename)):
             logger.debug(f"Moving {file} to {temp_filename}")
-            fs = fsspec.open(Pathy(file).parent).fs
+            fs = fsspec.open(Pathy.fluid(file).parent).fs
             fs.get(file, temp_filename)
         else:
             logger.debug(f"Already in local file, {temp_filename}")

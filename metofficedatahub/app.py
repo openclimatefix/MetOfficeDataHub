@@ -12,11 +12,11 @@ from metofficedatahub.multiple_files import MetOfficeDataHub, save
 
 logging.basicConfig(format="%(asctime)s %(name)s %(levelname)s:%(message)s")
 logging.getLogger("metofficedatahub").setLevel(
-    getattr(logging, os.environ.get("LOG_LEVEL", "DEBUG"))
+    getattr(logging, os.environ.get("LOG_LEVEL", "INFO"))
 )
 
 logger = logging.getLogger(__name__)
-logger.setLevel(getattr(logging, os.environ.get("LOG_LEVEL", "DEBUG")))
+logger.setLevel(getattr(logging, os.environ.get("LOG_LEVEL", "INFO")))
 
 
 @click.command()
@@ -46,14 +46,6 @@ logger.setLevel(getattr(logging, os.environ.get("LOG_LEVEL", "DEBUG")))
     default=None,
     envvar="DB_URL",
     help="Database to save when this has run",
-    type=click.STRING,
-)
-@click.option(
-    "--n-history_days",
-    default='yesterday',
-    envvar="N_HISTORY_DAYS",
-    help="The number of days that the api should load in the past. "
-         "Yesterday means back to yesterday morning",
     type=click.STRING,
 )
 def run(api_key, api_secret, save_dir, db_url: Optional[str] = None):
