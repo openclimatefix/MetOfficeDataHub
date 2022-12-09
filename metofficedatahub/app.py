@@ -65,18 +65,17 @@ def run(api_key, api_secret, save_dir, db_url: Optional[str] = None):
     # 2. Load grib files to one Xarray Dataset
     data = datahub.load_all_files()
 
-    # # 3. Save to directory
+    # 3. Save to directory
     save(dataset=data, save_dir=save_dir)
-    print(data)
 
-    # # 4. update table to show when this data has been pulled
-    # if db_url is not None:
-    #     connection = DatabaseConnection(url=db_url, base=Base_Forecast)
-    #     with connection.get_session() as session:
-    #         update_latest_input_data_last_updated(session=session, component="nwp")
-    #
-    # logger.info("Finished Running application.")
-    #
+    # 4. update table to show when this data has been pulled
+    if db_url is not None:
+        connection = DatabaseConnection(url=db_url, base=Base_Forecast)
+        with connection.get_session() as session:
+            update_latest_input_data_last_updated(session=session, component="nwp")
+
+    logger.info("Finished Running application.")
+
 
 if __name__ == "__main__":
     run()
