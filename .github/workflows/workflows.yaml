@@ -10,4 +10,4 @@ jobs:
     with:
       # pytest-cov looks at this folder
       pytest_cov_dir: "metofficedatahub"
-      brew_isntall: "c-blosc hdf5 eccodes"
+      brew_install: "c-blosc hdf5 eccodes"
