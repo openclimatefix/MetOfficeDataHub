@@ -146,7 +146,7 @@ class BaseMetOfficeDataHub:
             filename = f"{order_id}_{file_id}.grib"
 
         filename = f"{self.cache_dir}/{filename}"
-        fs = fsspec.open(Pathy(self.cache_dir).parent).fs
+        fs = fsspec.open(Pathy.fluid(self.cache_dir).parent).fs
         if not fs.exists(filename):
 
             data = self.call_url(
