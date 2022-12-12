@@ -113,7 +113,7 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
         # save from s3 to local temp
         if ~os.path.exists(Pathy(temp_filename)):
             logger.debug(f"Moving {file} to {temp_filename}")
-            fs = fsspec.open(Pathy(file).parent).fs
+            fs = fsspec.open(Pathy.fluid(file).parent).fs
             fs.get(file, temp_filename)
         else:
             logger.debug(f"Already in local file, {temp_filename}")
@@ -326,7 +326,7 @@ def save_to_netcdf_to_s3(dataset: xr.Dataset, filename: str):
         dataset.to_netcdf(path=path, mode="w", engine="h5netcdf")
 
         # 2. save to s3
-        filename_temp = str(Pathy(filename).parent.joinpath(str(uuid4()) + ".netcdf"))
+        filename_temp = str(Pathy.fluid(filename).parent.joinpath(str(uuid4()) + ".netcdf"))
         filesystem = fsspec.open(filename_temp).fs
         filesystem.put(path, filename_temp)
 
