@@ -48,6 +48,7 @@ def test_no_order_ids(mock_get, db_connection):
         )
         assert response.exit_code == 1
 
+
 @freeze_time("2022-01-01")
 @mock.patch("requests.get", side_effect=mocked_requests_get_error)
 def test_error(mock_get, db_connection):
