@@ -58,14 +58,8 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
     def download_all_files(self, order_ids: List[str]):
         """Download all latest files for specified orders.
 
-        If no orders are specified, download latest files
-        for all orders.
+        If no orders are specified, nothing is downloaded.
         """
-
-        if len(order_ids) == 0:
-            logger.info("Downloading all files")
-            all_orders = self.get_orders()
-            order_ids = [order.orderId for order in all_orders.orders]
 
         # loop over orders
         self.files = []

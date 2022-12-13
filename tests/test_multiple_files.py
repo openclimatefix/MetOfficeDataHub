@@ -12,13 +12,13 @@ from tests.conftest import mocked_requests_get
 
 @mock.patch("requests.get", side_effect=mocked_requests_get)
 def test_download_all_none(mock_get, metofficedatahub):
-    """Check that if there are no order ids, then all data is downloaded"""
+    """Check that if there are no order ids, then no data is downloaded"""
     with tempfile.TemporaryDirectory() as tmpdirname:
         metofficedatahub.cache_dir = tmpdirname
 
         metofficedatahub.download_all_files(order_ids=[])
 
-        assert len(metofficedatahub.files) == 1
+        assert len(metofficedatahub.files) == 0
 
 
 @mock.patch("requests.get", side_effect=mocked_requests_get)

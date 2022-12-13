@@ -16,10 +16,37 @@ runner = CliRunner()
 def test_save_to_zarr(mock_get, db_connection):
     with tempfile.TemporaryDirectory() as tmpdirname:
         response = runner.invoke(
-            run, ["--api-key", "fake", "--api-secret", "fake", "--save-dir", tmpdirname]
+            run,
+            [
+                "--api-key",
+                "fake",
+                "--api-secret",
+                "fake",
+                "--order-id",
+                "test_order_id",
+                "--save-dir",
+                tmpdirname,
+            ],
         )
         assert response.exit_code == 0
 
+
+@freeze_time("2022-01-01")
+@mock.patch("requests.get", side_effect=mocked_requests_get)
+def test_no_order_ids(mock_get, db_connection):
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        response = runner.invoke(
+            run,
+            [
+                "--api-key",
+                "fake",
+                "--api-secret",
+                "fake",
+                "--save-dir",
+                tmpdirname,
+            ],
+        )
+        assert response.exit_code == 1
 
 @freeze_time("2022-01-01")
 @mock.patch("requests.get", side_effect=mocked_requests_get_error)

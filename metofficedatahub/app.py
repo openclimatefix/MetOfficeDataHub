@@ -49,7 +49,8 @@ logger.setLevel(getattr(logging, os.environ.get("LOG_LEVEL", "INFO")))
     type=click.STRING,
 )
 @click.option(
-    "--order-ids",
+    "--order-id",
+    "order_ids",
     default=None,
     envvar="ORDER_IDS",
     help="Order IDs from which to pull latest files. "
