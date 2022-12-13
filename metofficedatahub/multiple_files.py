@@ -6,7 +6,7 @@ import logging
 import os
 import tempfile
 from datetime import datetime, timedelta, timezone
-from typing import List, Optional
+from typing import List
 from uuid import uuid4
 
 import cfgrib
@@ -78,7 +78,7 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
         for all orders.
         """
 
-        if len(order_ids) is 0:
+        if len(order_ids) == 0:
             logger.info("Downloading all files")
             all_orders = self.get_orders()
             order_ids = [order.orderId for order in all_orders.orders]

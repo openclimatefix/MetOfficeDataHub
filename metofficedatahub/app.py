@@ -1,7 +1,6 @@
 """ Application that pulls data from the Metoffice API and saves to a zarr file"""
 import logging
 import os
-import sys
 from typing import Optional
 
 import click
@@ -53,8 +52,10 @@ logger.setLevel(getattr(logging, os.environ.get("LOG_LEVEL", "INFO")))
     "--order-ids",
     default=None,
     envvar="ORDER_IDS",
-    help="Order IDs from which to pull latest files. Call flag multiple times to pass multiple IDs, or space-separate "
-    "them in the environment variable. Pulls files from all orders if not provided.",
+    help="Order IDs from which to pull latest files. "
+    "Call flag multiple times to pass multiple IDs, "
+    "or space-separate them in the environment variable. "
+    "Pulls files from all orders if not provided.",
     multiple=True,
     type=click.STRING,
 )
