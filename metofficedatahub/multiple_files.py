@@ -55,22 +55,6 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
         except Exception as e:
             logger.debug(f"Could not make folder {folder_to_download} - {e}")
 
-    def __init__(
-        self,
-        cache_dir: str = os.getenv("RAW_DIR", "./temp_metofficedatahub"),
-        client_id: str = None,
-        client_secret: str = None,
-    ):
-        """
-        Initialise the class
-
-        :param cache_dir: The directory where files are downloaded to
-        :param client_id: the client id for the api
-        :param client_secret: the client secret for the api
-        """
-        super().__init__(cache_dir, client_id, client_secret)
-        self.files = []
-
     def download_all_files(self, order_ids: List[str]):
         """Download all latest files for specified orders.
 
@@ -84,6 +68,7 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
             order_ids = [order.orderId for order in all_orders.orders]
 
         # loop over orders
+        self.files = []
         for order_id in order_ids:
 
             logger.debug(f"Loading files from order {order_id}")
