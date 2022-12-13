@@ -17,7 +17,6 @@ export PYTHONPATH=${PYTHONPATH}:/tests
 
 @pytest.fixture
 def db_connection():
-
     url = os.getenv("DB_URL", "sqlite:///test.db")
 
     connection = DatabaseConnection(url=url, base=Base_Forecast, echo=False)

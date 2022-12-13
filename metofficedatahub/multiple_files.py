@@ -6,7 +6,7 @@ import logging
 import os
 import tempfile
 from datetime import datetime, timedelta, timezone
-from typing import List, Optional
+from typing import List
 from uuid import uuid4
 
 import cfgrib
@@ -55,14 +55,11 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
         except Exception as e:
             logger.debug(f"Could not make folder {folder_to_download} - {e}")
 
-    def download_all_files(self, order_ids: Optional[List[str]] = None):
-        """Download all files in the latest"""
+    def download_all_files(self, order_ids: List[str]):
+        """Download all latest files for specified orders.
 
-        logger.info("Downloading all files")
-
-        if order_ids is None:
-            all_orders = self.get_orders()
-            order_ids = [order.orderId for order in all_orders.orders]
+        If no orders are specified, nothing is downloaded.
+        """
 
         # loop over orders
         self.files = []
@@ -184,14 +181,13 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
         all_dataset = []
         keys = list(all_datasets_per_filename.keys())
         for k in keys:
-
             logger.debug(f"Merging dataset {k} out of {len(keys)}")
 
             v = all_datasets_per_filename.pop(k)
 
             # print memoery
             process = psutil.Process(os.getpid())
-            logger.debug(f"Memory is {process.memory_info().rss / 10**6} MB")
+            logger.debug(f"Memory is {process.memory_info().rss / 10 ** 6} MB")
 
             # add time as dimension
             v = [vv.expand_dims("time") for vv in v]

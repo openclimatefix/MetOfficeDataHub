@@ -24,7 +24,7 @@ class BaseMetOfficeDataHub:
         """
         Initialise the class
 
-        :param cache_dir: The directory were files are downloaded to
+        :param cache_dir: The directory where files are downloaded to
         :param client_id: the client id for the api
         :param client_secret: the client secret for the api
         """

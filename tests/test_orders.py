@@ -7,13 +7,11 @@ from tests.conftest import mocked_requests_get
 
 @mock.patch("requests.get", side_effect=mocked_requests_get)
 def test_get_orders(mock_get, basemetofficedatahub):
-
     basemetofficedatahub.get_orders()
 
 
 @mock.patch("requests.get", side_effect=mocked_requests_get)
 def test_latest_order(mock_get, basemetofficedatahub):
-
     order_id = "test_order_id"
 
     basemetofficedatahub.get_lastest_order(order_id=order_id)
@@ -21,7 +19,6 @@ def test_latest_order(mock_get, basemetofficedatahub):
 
 @mock.patch("requests.get", side_effect=mocked_requests_get)
 def test_latest_order_file_id(mock_get, basemetofficedatahub):
-
     order_id = "test_order_id"
     file_id = "agl_temperature_00"
 
@@ -30,7 +27,6 @@ def test_latest_order_file_id(mock_get, basemetofficedatahub):
 
 @mock.patch("requests.get", side_effect=mocked_requests_get)
 def test_latest_order_file_id_data(mock_get, basemetofficedatahub):
-
     order_id = "test_order_id"
     file_id = "agl_temperature_00"
 
