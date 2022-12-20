@@ -69,7 +69,7 @@ docker build -t metofficedatahub -f infrastructure/docker/Dockerfile .
 ```
 and then to run the docker file use
 ```bash
-docker run -it -e API_KEY=change -e API_SECRET=change -e SAVE_DIR='save_dir' metofficedatahub
+docker run -it -e API_KEY=change -e API_SECRET=change -e SAVE_DIR='save_dir' -e ORDER_IDS='id1 id2 id3' metofficedatahub
 ```
 
 # Data variables
