@@ -1,7 +1,9 @@
 """ Utils functions """
 import logging
+import os
 
 import numpy as np
+import psutil
 import pyproj
 import xarray as xr
 from scipy.interpolate import griddata
@@ -61,6 +63,8 @@ def add_x_y(dataset: xr.Dataset) -> xr.Dataset:
     lon = griddata(
         points=points, values=dataset.longitude.values.ravel(), xi=(y_grid, x_grid), method="linear"
     )
+    process = psutil.Process(os.getpid())
+    logger.debug(f"Memory is {process.memory_info().rss / 10 ** 6} MB")
 
     data_vars = list(dataset.data_vars)
     data_vars_all = {}
@@ -83,6 +87,9 @@ def add_x_y(dataset: xr.Dataset) -> xr.Dataset:
                 # The timings are for a (639, 455) image
                 tt = griddata(points=points, values=values, xi=(y_grid, x_grid), method="nearest")
                 data_gird[i, j] = tt
+
+        process = psutil.Process(os.getpid())
+        logger.debug(f"Memory is {process.memory_info().rss / 10 ** 6} MB")
 
         data_vars_all[data_var] = xr.DataArray(
             **{"dims": ["time", "step", "y", "x"], "data": data_gird, "attrs": data.attrs}
