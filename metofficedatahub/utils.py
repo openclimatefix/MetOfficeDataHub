@@ -75,7 +75,6 @@ def add_x_y(dataset: xr.Dataset) -> xr.Dataset:
         n1, n2, ny, nx = data.shape
         data_gird = np.zeros((n1, n2, NUM_ROWS, NUM_COLS))
 
-
         # need to loop of 'init_time' and 'step'
         for i in range(n1):
             for j in range(n2):
