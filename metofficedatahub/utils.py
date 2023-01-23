@@ -131,10 +131,12 @@ def post_process_dataset(dataset: xr.Dataset) -> xr.Dataset:
     """
     logger.debug("Post-processing dataset...")
     da = dataset.to_array(dim="variable", name="UKV")
+    logger.debug('Changed to dataset')
 
     # Reverse `lattitude` so it's top-to-bottom (so ZarrDataSource.get_example() works correctly!)
     # Adapted from:
     # https://stackoverflow.com/questions/54677161/xarray-reverse-an-array-along-one-coordinate
+    logger.debug('Make y reversed')
     y_reversed = da.y[::-1]
     da = da.reindex(y=y_reversed)
 
