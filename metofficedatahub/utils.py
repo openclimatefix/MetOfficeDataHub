@@ -1,5 +1,6 @@
 """ Utils functions """
 import logging
+import os
 
 import numpy as np
 import pyproj
@@ -61,6 +62,8 @@ def add_x_y(dataset: xr.Dataset) -> xr.Dataset:
     lon = griddata(
         points=points, values=dataset.longitude.values.ravel(), xi=(y_grid, x_grid), method="linear"
     )
+    process = psutil.Process(os.getpid())
+    logger.debug(f"Memory is {process.memory_info().rss / 10 ** 6} MB")
 
     data_vars = list(dataset.data_vars)
     data_vars_all = {}
