@@ -72,6 +72,7 @@ def add_x_y(dataset: xr.Dataset) -> xr.Dataset:
         logger.debug(f"Resampling {data_var}")
 
         data = dataset.__getitem__(data_var)
+        dataset.drop_vars(data_var)
 
         n1, n2, ny, nx = data.shape
         data_gird = np.zeros((n1, n2, NUM_ROWS, NUM_COLS))
