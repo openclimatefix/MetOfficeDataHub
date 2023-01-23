@@ -75,6 +75,7 @@ def add_x_y(dataset: xr.Dataset) -> xr.Dataset:
         n1, n2, ny, nx = data.shape
         data_gird = np.zeros((n1, n2, NUM_ROWS, NUM_COLS))
 
+
         # need to loop of 'init_time' and 'step'
         for i in range(n1):
             for j in range(n2):
@@ -86,6 +87,9 @@ def add_x_y(dataset: xr.Dataset) -> xr.Dataset:
                 # The timings are for a (639, 455) image
                 tt = griddata(points=points, values=values, xi=(y_grid, x_grid), method="nearest")
                 data_gird[i, j] = tt
+
+        process = psutil.Process(os.getpid())
+        logger.debug(f"Memory is {process.memory_info().rss / 10 ** 6} MB")
 
         data_vars_all[data_var] = xr.DataArray(
             **{"dims": ["time", "step", "y", "x"], "data": data_gird, "attrs": data.attrs}
