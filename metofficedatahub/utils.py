@@ -3,6 +3,7 @@ import logging
 import os
 
 import numpy as np
+import psutil
 import pyproj
 import xarray as xr
 from scipy.interpolate import griddata
