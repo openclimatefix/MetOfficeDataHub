@@ -64,7 +64,6 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
         # loop over orders
         self.files = []
         for order_id in order_ids:
-
             logger.debug(f"Loading files from order {order_id}")
 
             self.order_details = self.get_lastest_order(order_id=order_id)
@@ -84,7 +83,6 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
                 # There seem to be two files that are the same,
                 # one with '+HH' and one with 'YYYYMMDDHH'
                 if datetime[0] != "+":
-
                     # download file
                     filename = self.get_latest_order_file_id_data(
                         order_id=order_id, file_id=file_id
@@ -133,7 +131,6 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
         # loop over all files and load them
         all_datasets_per_filename = {}
         for i, file in enumerate(self.files):
-
             logger.debug(f"Loading file {i} out of {len(self.files)}")
 
             variable = file.fileId
@@ -146,7 +143,6 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
 
             # rename variables
             if variable in variable_name_translation:
-
                 rename = variable_name_translation[variable]
                 for key in rename.keys():
                     if key in dataset.data_vars:
@@ -157,7 +153,6 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
 
             # remove un-needed variables
             for var in VARS_TO_DELETE:
-
                 if var in dataset.variables:
                     del dataset[var]
 
