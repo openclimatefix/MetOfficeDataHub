@@ -10,7 +10,7 @@ install_requires = (this_directory / "requirements.txt").read_text().splitlines(
 
 setup(
     name="metoffice-weather-datahub",
-    version="1.1.15",
+    version="1.1.16",
     license="MIT",
     description="Python wrapper for the UK Met Office Weather DataHub API",
     author="Peter Dudfield",
