@@ -67,31 +67,17 @@ def test_load_all_files(mock_get, metofficedatahub):
         assert len(data.data_vars) > 0
 
 
-@freeze_time("2022-01-01")
-@mock.patch("requests.get", side_effect=mocked_requests_get)
-def test_save_to_zarr(mock_get, metofficedatahub):
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        metofficedatahub.cache_dir = tmpdirname
+def test_save(met_office_all_files, tmp_path):
+    # Our fixture is small using the default `ideal_chunk_size` would make only one chunk.
+    save(met_office_all_files, save_dir=tmp_path, ideal_chunk_size_mb=1 / 1024)
 
-        metofficedatahub.download_all_files(order_ids=["test_order_id"])
-        data = metofficedatahub.load_all_files()
+    # Make sure the 2 latest files have been created.
+    assert os.path.exists(f"{tmp_path}/latest.netcdf")
+    zarr_path = f"{tmp_path}/latest.zarr"
+    assert os.path.exists(zarr_path)
 
-        with tempfile.TemporaryDirectory() as tmpdirname:
-            save(data, save_dir=tmpdirname, output_type="zarr")
-
-            assert os.path.exists(f"{tmpdirname}/latest.zarr")
-
-
-@freeze_time("2022-01-01")
-@mock.patch("requests.get", side_effect=mocked_requests_get)
-def test_save_to_netcdf(mock_get, metofficedatahub):
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        metofficedatahub.cache_dir = tmpdirname
-
-        metofficedatahub.download_all_files(order_ids=["test_order_id"])
-        data = metofficedatahub.load_all_files()
-
-        with tempfile.TemporaryDirectory() as tmpdirname:
-            save(data, save_dir=tmpdirname)
-
-            assert os.path.exists(f"{tmpdirname}/latest.netcdf")
+    # Verify the chunks of the zarr file.
+    # In practice we don't need the `chunks="auto"` argument, but we need it for the chunks to
+    # represent the files.
+    ds = xr.open_dataset(zarr_path, chunks="auto", engine="zarr")
+    assert ds.chunks == dict(variable=(1,), init_time=(1,), step=(13,), y=(10,), x=(10,))

@@ -8,6 +8,7 @@ import json
 import os
 
 import pytest
+import xarray as xr
 from nowcasting_datamodel.connection import DatabaseConnection
 from nowcasting_datamodel.models.base import Base_Forecast
 
@@ -102,3 +103,12 @@ def mocked_requests_get_error():
             return "Page does not exist"
 
     return MockResponse("Page does not exist", 404)
+
+
+@pytest.fixture
+def met_office_all_files():
+    """Xarray dataset that looks like what is returned by metofficedatahub.load_all_files()
+
+    This allows running some tests way faster.
+    """
+    return xr.open_dataset("tests/fixtures/met_all_files.netcdf")

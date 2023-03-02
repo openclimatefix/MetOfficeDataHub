@@ -3,18 +3,15 @@
 This gives an easy way to download all files from an order
 """
 import logging
+import math
 import os
-import tempfile
 from datetime import datetime, timedelta, timezone
 from typing import List
-from uuid import uuid4
 
 import cfgrib
 import fsspec
-import numcodecs
 import pandas as pd
 import psutil
-import s3fs
 import xarray as xr
 from pathy import Pathy
 
@@ -207,25 +204,11 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
         return dataset
 
 
-def make_output_filenames(
-    dataset: xr.Dataset, save_dir: str, output_type: str = "netcdf"
-) -> List[str]:
+def _get_first_init_time_as_str(dataset: xr.Dataset) -> str:
+    """Extract the first `init_time` from the dataset and iso-format it.
+
+    This is used to create a filename for the dataset.
     """
-    Make two filenames to be saved
-
-    # 1. use the date timestamp of the data. Idea is that this will keep the historic
-    # 2. the latest - shows the most recent data without search through historic.
-
-    :param dataset: The Xarray Dataset to be save
-    :param save_dir: the directory where data is saved.
-        The zarr file will be saved using the timestamp of the run in isoformat
-    :param output_type: what file type should it be saved as.
-        The options 'are netcdf' or 'zarr'
-    """
-
-    logger.debug("Making file names for saving data")
-    assert output_type in ["zarr", "netcdf"]
-
     # get time of predictions
     time = pd.to_datetime(dataset.init_time.values)
 
@@ -233,93 +216,66 @@ def make_output_filenames(
     if type(time) == pd.DatetimeIndex:
         time = time[0]
 
-    # make file names
-    filename = time.tz_localize("UTC").isoformat()
-    filename_and_path = f"{save_dir}/{filename}.{output_type}"
-    filename_and_path_latest = f"{save_dir}/latest.{output_type}"
-
-    # extra step needed if we are saving to AWS.
-    # There may be different steps if saving to different file systems
-    if fsspec.open(save_dir).fs == s3fs.S3FileSystem() and output_type == "zarr":
-        filename_and_path = fsspec.get_mapper(
-            filename_and_path, client_kwargs={"region_name": "eu-west-1"}
-        )
-        filename_and_path_latest = fsspec.get_mapper(
-            filename_and_path_latest, client_kwargs={"region_name": "eu-west-1"}
-        )
-
-    return [filename_and_path, filename_and_path_latest]
+    return time.tz_localize("UTC").isoformat()
 
 
-def save(dataset: xr.Dataset, save_dir: str, save_latest: bool = True, output_type: str = "netcdf"):
+def _chunk(dataset: xr.Dataset, *, ideal_chunk_size_mb: float) -> xr.Dataset:
+    """Return a chunked dataset based on a custom chunking scheme.
+
+    This chunking scheme (chunks of given size that always include all the `step` and `variables`)
+    works well in practice when we get the data for the pv-sites models.
+
+    :param dataset: The dataset to be chunked.
+    :param ideal_chunk_size_mb: Size of the chunks in Mb.
     """
-    Save dataset to zarr file
+    num_step = dataset.dims["step"]
+    num_variables = dataset.dims["variable"]
 
-    :param dataset: The Xarray Dataset to be save
-    :param save_dir: the directory where data is saved.
-        The zarr file will be saved using the timestamp of the run in isoformat
-    :param save_latest: option to save as 'latest.netcdf'
-    :param output_type: what file type should it be saved as.
-        The options 'are netcdf' or 'zarr'
+    num_float_in_mb = 1024 * 1024 * 8
+
+    size = int(math.sqrt(ideal_chunk_size_mb * num_float_in_mb / num_step / num_variables))
+    return dataset.chunk(dict(init_time=1, step=num_step, variable=num_variables, x=size, y=size))
+
+
+def save(dataset: xr.Dataset, save_dir: str, *, ideal_chunk_size_mb=1):
     """
+    Save dataset
 
-    logger.info(f"Saving data to {output_type} file here: {save_dir}")
+    :param dataset: The Xarray Dataset to be saved
+    :param save_dir: the directory where data is saved. This can either be a local path or a
+        "s3://..." path. 3 files similar files are created:
+            * One using the timestamp of the first `init_time` as the filename
+            * latest.netcdf
+            * latest.zarr
+    :param ideal_chunk_size_mb: Ideal chunk size in Mb for the .zarr file.
+    """
+    logger.info(f'Saving data to "{save_dir}"')
 
-    assert output_type in ["zarr", "netcdf"]
+    filename = _get_first_init_time_as_str(dataset)
+    path = f"{save_dir}/{filename}.netcdf"
+    logger.debug(f'Saving data to "{path}"')
+    save_to_s3(dataset, path)
 
-    # Make two files names
-    # 1. use the date timestamp of the data. Idea is that this will keep the historic
-    # 2. the latest - shows the most recent data without search through historic.
-    filename_and_path, filename_and_path_latest = make_output_filenames(
-        dataset=dataset, save_dir=save_dir, output_type=output_type
-    )
+    # Also save it as "lastest.<ext>", both in zarr and netcdf format.
+    # TODO Copying the file we just wrote in AWS directly would be faster.
+    logger.debug(f'Saving data to "{path}"')
+    path = f"{save_dir}/latest.netcdf"
+    save_to_s3(dataset, path)
 
-    # option to save latest or not
-    if save_latest:
-        logger.debug(f"Saving latest file {filename_and_path_latest}")
-        save_to_s3(
-            dataset=dataset, filename_and_path=filename_and_path_latest, output_type=output_type
-        )
-
-    # save historic data
-    logger.debug(f"Saving file {filename_and_path}")
-    save_to_s3(dataset=dataset, filename_and_path=filename_and_path, output_type=output_type)
+    chunked = _chunk(dataset, ideal_chunk_size_mb=ideal_chunk_size_mb)
+    logger.debug(f'Saving data to "{path}"')
+    path = f"{save_dir}/latest.zarr"
+    save_to_s3(chunked, path)
 
 
-def save_to_s3(dataset: xr.Dataset, filename_and_path: str, output_type):
+def save_to_s3(dataset: xr.Dataset, path: str):
     """Save to s3"""
-
-    if output_type == "zarr":
-        # encoding used when saving to zarr file
-        encoding = {
-            var: {"compressor": numcodecs.Blosc(cname="zstd", clevel=5)}
-            for var in dataset.data_vars
-        }
-
-        dataset.to_zarr(store=filename_and_path, mode="w", encoding=encoding, consolidated=True)
+    if path.endswith(".zarr"):
+        dataset.to_zarr(store=path, mode="w", consolidated=True)
+    elif path.endswith(".netcdf"):
+        # xarray doesn't support writing .netcdf files directly to S3 like for .zarr files.
+        # Also note the "simplecache::" and see https://github.com/pydata/xarray/issues/4122
+        with fsspec.open("simplecache::" + path, mode="wb") as f:
+            dataset.to_netcdf(f)
     else:
-        save_to_netcdf_to_s3(dataset=dataset, filename=filename_and_path)
-
-
-def save_to_netcdf_to_s3(dataset: xr.Dataset, filename: str):
-    """Save xarray to netcdf in s3
-
-    1. Save in temp local dir
-    2. upload to s3 to temp name
-    3. remove file and then rename
-
-    :param dataset: The Xarray Dataset to be save
-    :param filename: The s3 filname
-    """
-    with tempfile.TemporaryDirectory() as dir:
-        # 1. save locally
-        path = f"{dir}/temp.netcdf"
-        dataset.to_netcdf(path=path, mode="w", engine="h5netcdf")
-
-        # 2. save to s3
-        filename_temp = str(Pathy.fluid(filename).parent.joinpath(str(uuid4()) + ".netcdf"))
-        filesystem = fsspec.open(filename_temp).fs
-        filesystem.put(path, filename_temp)
-
-        # 3. remove and rename over
-        filesystem.mv(filename_temp, filename)
+        assert False, "unexpected extension"
