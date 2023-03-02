@@ -233,8 +233,20 @@ def _chunk(dataset: xr.Dataset, *, ideal_chunk_size_mb: float) -> xr.Dataset:
 
     num_float_in_mb = 1024 * 1024 * 8
 
-    size = int(math.sqrt(ideal_chunk_size_mb * num_float_in_mb / num_step / num_variables))
+    # In practice, files are compressed, this is a rule of thumb to take it into account
+    compression_factor = 10.0
+    size = int(
+        math.sqrt(
+            ideal_chunk_size_mb * num_float_in_mb / num_step / num_variables / compression_factor
+        )
+    )
     return dataset.chunk(dict(init_time=1, step=num_step, variable=num_variables, x=size, y=size))
+
+
+def _log_and_save(dataset: xr.Dataset, path: str):
+    """Util function to log to debug before saving to s3."""
+    logger.debug(f'Saving data to "{path}"')
+    save_to_s3(dataset, path)
 
 
 def save(dataset: xr.Dataset, save_dir: str, *, ideal_chunk_size_mb=1):
@@ -252,20 +264,14 @@ def save(dataset: xr.Dataset, save_dir: str, *, ideal_chunk_size_mb=1):
     logger.info(f'Saving data to "{save_dir}"')
 
     filename = _get_first_init_time_as_str(dataset)
-    path = f"{save_dir}/{filename}.netcdf"
-    logger.debug(f'Saving data to "{path}"')
-    save_to_s3(dataset, path)
+    _log_and_save(dataset, f"{save_dir}/{filename}.netcdf")
 
     # Also save it as "lastest.<ext>", both in zarr and netcdf format.
     # TODO Copying the file we just wrote in AWS directly would be faster.
-    logger.debug(f'Saving data to "{path}"')
-    path = f"{save_dir}/latest.netcdf"
-    save_to_s3(dataset, path)
+    _log_and_save(dataset, f"{save_dir}/latest.netcdf")
 
     chunked = _chunk(dataset, ideal_chunk_size_mb=ideal_chunk_size_mb)
-    logger.debug(f'Saving data to "{path}"')
-    path = f"{save_dir}/latest.zarr"
-    save_to_s3(chunked, path)
+    _log_and_save(chunked, f"{save_dir}/latest.zarr")
 
 
 def save_to_s3(dataset: xr.Dataset, path: str):
