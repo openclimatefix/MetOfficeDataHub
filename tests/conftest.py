@@ -17,9 +17,9 @@ from metofficedatahub.multiple_files import MetOfficeDataHub
 
 
 @pytest.fixture
-def db_connection():
+def db_connection(tmp_path):
     """Database connection"""
-    url = os.getenv("DB_URL", "sqlite:///test.db")
+    url = os.getenv("DB_URL", f"sqlite:///{tmp_path}/test.db")
 
     connection = DatabaseConnection(url=url, base=Base_Forecast, echo=False)
     Base_Forecast.metadata.create_all(connection.engine)
