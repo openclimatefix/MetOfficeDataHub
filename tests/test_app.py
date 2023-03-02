@@ -1,7 +1,6 @@
 import tempfile
 from unittest import mock
 
-import xarray as xr
 from click.testing import CliRunner
 from freezegun import freeze_time
 

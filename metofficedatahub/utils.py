@@ -131,7 +131,7 @@ def post_process_dataset(dataset: xr.Dataset) -> xr.Dataset:
     """
     logger.debug("Post-processing dataset...")
     da = dataset.to_array(dim="variable", name="UKV")
-    
+
     process = psutil.Process(os.getpid())
     logger.debug(f"Memory is {process.memory_info().rss / 10 ** 6} MB")
 

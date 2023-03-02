@@ -1,3 +1,9 @@
+"""Conftest
+
+To run this tests local you may need to add
+export PYTHONPATH=${PYTHONPATH}:/tests
+"""
+
 import json
 import os
 
@@ -9,14 +15,10 @@ from metofficedatahub.base import BaseMetOfficeDataHub
 from metofficedatahub.constants import DOMAIN, ROOT
 from metofficedatahub.multiple_files import MetOfficeDataHub
 
-"""
-To run this tests local you may need to add
-export PYTHONPATH=${PYTHONPATH}:/tests
-"""
-
 
 @pytest.fixture
 def db_connection():
+    """Database connection"""
     url = os.getenv("DB_URL", "sqlite:///test.db")
 
     connection = DatabaseConnection(url=url, base=Base_Forecast, echo=False)
@@ -29,15 +31,19 @@ def db_connection():
 
 @pytest.fixture
 def basemetofficedatahub():
+    """Fixture of BaseMetOfficeDataHub"""
     return BaseMetOfficeDataHub(client_id="fake", client_secret="fake")
 
 
 @pytest.fixture
 def metofficedatahub():
+    """Fixture of MetOfficeDataHub"""
     return MetOfficeDataHub(client_id="fake", client_secret="fake")
 
 
 def mocked_requests_get(*args, **kwargs):
+    """Mocked requests get"""
+
     class MockResponse:
         def __init__(self, data, status_code):
             self.json_data = data
@@ -57,8 +63,8 @@ def mocked_requests_get(*args, **kwargs):
     ):
         filename = "file_details.json"
     elif (
-        args[0]
-        == f"https://{DOMAIN}/{ROOT}/orders/test_order_id/latest/agl_temperature_00/data?detail=MINIMAL"
+        args[0] == f"https://{DOMAIN}/{ROOT}/orders/test_order_id/latest/agl_temperature_00/data?"
+        "detail=MINIMAL"
     ):
         filename = "test_00.grib"
     elif args[0] == f"https://{DOMAIN}/{ROOT}/runs?detail=MINIMAL":
