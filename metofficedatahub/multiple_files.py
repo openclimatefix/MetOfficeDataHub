@@ -231,15 +231,13 @@ def _chunk(dataset: xr.Dataset, *, ideal_chunk_size_mb: float) -> xr.Dataset:
     num_step = dataset.dims["step"]
     num_variables = dataset.dims["variable"]
 
-    num_float_in_mb = 1024 * 1024 * 8
+    # Number of floats in a megabyte (assuming 64 bit floats).
+    num_float_in_mb = 1024 * 1024 / 8
 
-    # In practice, files are compressed, this is a rule of thumb to take it into account
-    compression_factor = 10.0
-    size = int(
-        math.sqrt(
-            ideal_chunk_size_mb * num_float_in_mb / num_step / num_variables / compression_factor
-        )
-    )
+    # Calculate the `size` do we need for x and y if we want to have chunks of
+    # `ideal_chunk_size_mb` megabytes.
+    size = int(math.sqrt(ideal_chunk_size_mb * num_float_in_mb / num_step / num_variables))
+
     return dataset.chunk(dict(init_time=1, step=num_step, variable=num_variables, x=size, y=size))
 
 
