@@ -193,6 +193,7 @@ class MetOfficeDataHub(BaseMetOfficeDataHub):
             # save memory
             del v
 
+        logger.debug(all_dataset)
         dataset = xr.merge(all_dataset)
         logger.debug(f"Loaded all files, {dataset.data_vars}")
         logger.debug(f"{dataset.time=}")
