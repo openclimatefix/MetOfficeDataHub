@@ -141,7 +141,7 @@ def post_process_dataset(dataset: xr.Dataset) -> xr.Dataset:
     y_reversed = da.y[::-1]
     da = da.reindex(y=y_reversed)
 
-    return (
+    da =  (
         da.to_dataset()
         .rename({"time": "init_time"})
         .chunk(
@@ -154,3 +154,11 @@ def post_process_dataset(dataset: xr.Dataset) -> xr.Dataset:
             }
         )
     )
+
+    # make sure we only save the last forecast run
+    logger.debug(f"Only selecting last forecast run")
+    da = da.isel(init_time=-1)
+
+    return da
+
+
