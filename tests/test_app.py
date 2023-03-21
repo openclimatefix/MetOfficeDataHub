@@ -26,6 +26,7 @@ def test_save_to_zarr(mock_get, db_connection):
                 "--save-dir",
                 tmpdirname,
             ],
+            catch_exceptions=False,
         )
         assert response.exit_code == 0
 
