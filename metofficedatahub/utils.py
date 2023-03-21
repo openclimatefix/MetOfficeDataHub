@@ -157,6 +157,6 @@ def post_process_dataset(dataset: xr.Dataset) -> xr.Dataset:
 
     # make sure we only save the last forecast run
     logger.debug("Only selecting last forecast run")
-    da = da.isel(init_time=-1)
+    da = da.isel(init_time=[-1])
 
     return da
