@@ -291,7 +291,7 @@ def save_to_s3(dataset: xr.Dataset, path: str):
             mode="w",
             consolidated=True,
             encoding={
-                "data": {"compressor": Blosc2("zstd", clevel=5)},
+                "UKV": {"compressor": Blosc2("zstd", clevel=5)},
                 "time": {"units": "nanoseconds since 1970-01-01"},
             },
         )
