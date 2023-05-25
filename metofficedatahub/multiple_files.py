@@ -299,8 +299,6 @@ def save_to_s3(dataset: xr.Dataset, path: str):
         # xarray doesn't support writing .netcdf files directly to S3 like for .zarr files.
         # Also note the "simplecache::" and see https://github.com/pydata/xarray/issues/4122
         with fsspec.open("simplecache::" + path, mode="wb") as f:
-            dataset.to_netcdf(
-                f, engine="h5netcdf", encoding={"data": {"compressor": Blosc2("zstd", clevel=5)}}
-            )
+            dataset.to_netcdf(f, engine="h5netcdf")
     else:
         assert False, "unexpected extension"
