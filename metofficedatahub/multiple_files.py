@@ -292,7 +292,6 @@ def save_to_s3(dataset: xr.Dataset, path: str):
             consolidated=True,
             encoding={
                 "UKV": {"compressor": Blosc2("zstd", clevel=5)},
-                "time": {"units": "nanoseconds since 1970-01-01"},
             },
         )
     elif path.endswith(".netcdf"):
