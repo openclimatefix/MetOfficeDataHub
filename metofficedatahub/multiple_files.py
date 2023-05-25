@@ -13,6 +13,7 @@ import fsspec
 import pandas as pd
 import psutil
 import xarray as xr
+from ocf_blosc2 import Blosc2
 from pathy import Pathy
 
 from metofficedatahub.base import BaseMetOfficeDataHub
@@ -283,12 +284,23 @@ def save(dataset: xr.Dataset, save_dir: str, *, ideal_chunk_size_mb=1):
 
 def save_to_s3(dataset: xr.Dataset, path: str):
     """Save to s3"""
+
     if path.endswith(".zarr"):
-        dataset.to_zarr(store=path, mode="w", consolidated=True)
+        dataset.to_zarr(
+            store=path,
+            mode="w",
+            consolidated=True,
+            encoding={
+                "data": {"compressor": Blosc2("zstd", clevel=5)},
+                "time": {"units": "nanoseconds since 1970-01-01"},
+            },
+        )
     elif path.endswith(".netcdf"):
         # xarray doesn't support writing .netcdf files directly to S3 like for .zarr files.
         # Also note the "simplecache::" and see https://github.com/pydata/xarray/issues/4122
         with fsspec.open("simplecache::" + path, mode="wb") as f:
-            dataset.to_netcdf(f, engine="h5netcdf")
+            dataset.to_netcdf(
+                f, engine="h5netcdf", encoding={"data": {"compressor": Blosc2("zstd", clevel=5)}}
+            )
     else:
         assert False, "unexpected extension"
