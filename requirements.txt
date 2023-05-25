@@ -4,6 +4,7 @@ pre-commit
 ecmwflibs
 eccodes
 cfgrib
+ocf_blosc2
 xarray
 numcodecs==0.10.0a2
 zarr
